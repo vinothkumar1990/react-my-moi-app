@@ -5,6 +5,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "./Home.css";
+import { motion } from "framer-motion";
 
 export const Loan = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const Loan = () => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const lastRowRef = useRef(null);
@@ -53,7 +54,7 @@ export const Loan = () => {
                   "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
                 "Content-Type": "application/json",
               },
-            }
+            },
           )
           .then(() => {
             const newProductList = products.filter((p) => p.id !== id);
@@ -62,7 +63,11 @@ export const Loan = () => {
           })
           .catch((error) => {
             console.error("Delete error:", error);
-            Swal.fire("Error!", "Something went wrong while deleting.", "error");
+            Swal.fire(
+              "Error!",
+              "Something went wrong while deleting.",
+              "error",
+            );
           });
       }
     });
@@ -76,11 +81,11 @@ export const Loan = () => {
   // ✅ Calculate Totals
   const totalOldAmount = products.reduce(
     (sum, item) => sum + Number(item.old_amount || 0),
-    0
+    0,
   );
   const totalNewAmount = products.reduce(
     (sum, item) => sum + Number(item.new_amount || 0),
-    0
+    0,
   );
 
   // ✅ Export to CSV
@@ -107,7 +112,7 @@ export const Loan = () => {
     const csvContent = [
       "\uFEFF" + headers.join(","), // UTF-8 BOM
       ...rows.map((r) =>
-        r.map((f) => `"${String(f || "").replace(/"/g, '""')}"`).join(",")
+        r.map((f) => `"${String(f || "").replace(/"/g, '""')}"`).join(","),
       ),
     ].join("\n");
 
@@ -153,10 +158,20 @@ export const Loan = () => {
   };
 
   return (
-    <div style={{ padding: "10px" }}>
+    <motion.div
+      style={{ padding: "10px" }}
+      initial={{ x: -100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
       {/* ✅ Buttons */}
-      <div style={{ textAlign: "right", margin: "10px 20px" }}>
-        <button
+      <motion.div
+        style={{ textAlign: "right", margin: "10px 20px" }}
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.button
           onClick={exportToCSV}
           style={{
             backgroundColor: "#d9534f",
@@ -167,10 +182,32 @@ export const Loan = () => {
             cursor: "pointer",
             marginRight: "10px",
           }}
+          initial={{
+            opacity: 0,
+            scale: 0.8,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          whileHover={{
+            scale: 1.08,
+          }}
+          whileTap={{
+            scale: 0.95,
+          }}
         >
           Download CSV
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           onClick={handlePrint}
           style={{
             backgroundColor: "#0275d8",
@@ -180,10 +217,32 @@ export const Loan = () => {
             borderRadius: "5px",
             cursor: "pointer",
           }}
+          initial={{
+            opacity: 0,
+            scale: 0.8,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          whileHover={{
+            scale: 1.08,
+          }}
+          whileTap={{
+            scale: 0.95,
+          }}
         >
           Print Page
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
       {/* ✅ Add New Moi */}
       {/*<article style={{ marginBottom: "20px" }}>
@@ -206,8 +265,20 @@ export const Loan = () => {
       </article>*/}
 
       {/* ✅ Table */}
-      <div style={{ overflowX: "auto" }}>
-        <table width="100%" border="1" style={{ borderCollapse: "collapse" }}>
+      <motion.div
+        style={{ overflowX: "auto" }}
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.table
+          width="100%"
+          border="1"
+          style={{ borderCollapse: "collapse" }}
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
           <thead>
             <tr style={{ backgroundColor: "#0275d8" }}>
               <th style={thStyle}>ஊர்</th>
@@ -222,13 +293,16 @@ export const Loan = () => {
           </thead>
           <tbody>
             {products.map((item, index) => (
-              <tr
+              <motion.tr
                 key={item.id}
                 ref={index === products.length - 1 ? lastRowRef : null}
                 style={{
                   textAlign: "center",
                   backgroundColor: index % 2 === 0 ? "#f7d4e7" : "#e2e2e2",
                 }}
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.8 }}
               >
                 <td style={tdStyle}>{item.place}</td>
                 <td style={tdStyle}>{item.name}</td>
@@ -253,14 +327,17 @@ export const Loan = () => {
                     Delete
                   </button>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
-            <tr
+            <motion.tr
               style={{
                 backgroundColor: "#d1ecf1",
                 fontWeight: "bold",
                 textAlign: "center",
               }}
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
             >
               <td style={tdTotalStyle}></td>
               <td style={tdTotalStyle}>மொத்தம்</td>
@@ -270,10 +347,10 @@ export const Loan = () => {
               <td style={tdTotalStyle}></td>
               <td style={tdTotalStyle}></td>
               <td style={tdTotalStyle}></td>
-            </tr>
+            </motion.tr>
           </tbody>
-        </table>
-      </div>
+        </motion.table>
+      </motion.div>
 
       {/* ✅ Print CSS */}
       <style>
@@ -290,6 +367,6 @@ export const Loan = () => {
         }
       `}
       </style>
-    </div>
+    </motion.div>
   );
 };

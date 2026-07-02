@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import data from "../assets/mois.json"
-import { Atom } from 'react-loading-indicators'
-import "./Home.css"
-import { Slides } from './Slides'
-import useData from "./custom-hook/useData" // ✅ Make sure this path is correct
+import React, { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
+import data from "../assets/mois.json";
+import { Atom } from "react-loading-indicators";
+import "./Home.css";
+import { Slides } from "./Slides";
+import useData from "./custom-hook/useData"; // custom hook
+import { motion } from "framer-motion";
 
 export const Home = ({ cart, setCart }) => {
-  // Fetch data from Supabase using the custom hook
+  // Logged in user
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  const userFunction = loggedInUser?.function_name || "";
+
+  // Fetch data from Supabase
   const { products, error, isLoading, setProducts } = useData(
     "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/mois",
     {
@@ -17,191 +23,277 @@ export const Home = ({ cart, setCart }) => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
-  const [loading, setLoading] = useState(true);
-  const [mois, setMois] = useState([]);
+  const [loadingLocal, setLoadingLocal] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
 
+  const itemsPerPage = 10;
+  const activeData = products && products.length > 0 ? products : data;
+  const filteredData = activeData;
+
+  const pageCount = Math.ceil(filteredData.length / itemsPerPage);
+
+  const offset = currentPage * itemsPerPage;
+
+  const currentItems = filteredData.slice(offset, offset + itemsPerPage);
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
+
+  // Fallback JSON loader
   useEffect(() => {
     const timer = setTimeout(() => {
-      setMois(data);
-      setLoading(false);
+      setLoadingLocal(false);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, []);
 
-  // Combine Supabase products or fallback to local mois data
-  const activeData = products && products.length > 0 ? products : mois;
+  // Group by name
+  const grouped = currentItems.reduce((acc, curr) => {
+    if (!acc[curr.function_name]) {
+      acc[curr.function_name] = [];
+    }
 
-  // Group by `name`
-  const grouped = activeData.reduce((acc, curr) => {
-    if (!acc[curr.name]) acc[curr.name] = [];
-    acc[curr.name].push(curr);
+    acc[curr.function_name].push(curr);
+
     return acc;
   }, {});
 
   const thStyle = {
-    padding: '10px',
-    borderBottom: '1px solid #ccc',
-    textAlign: 'center',
+    padding: "10px",
+    borderBottom: "1px solid #ccc",
+    textAlign: "center",
   };
 
   const tdStyle = {
-    padding: '10px',
-    borderBottom: '1px solid #eee',
-    textAlign: 'center',
+    padding: "10px",
+    borderBottom: "1px solid #eee",
+    textAlign: "center",
   };
 
   const tdTotalStyle = {
-    padding: '10px',
-    borderBottom: '1px solid #eee',
-    textAlign: 'center',
-    color: '#39740c',
+    padding: "10px",
+    borderBottom: "1px solid #eee",
+    textAlign: "center",
+    color: "#39740c",
   };
 
   const handlePrint = () => {
     window.print();
   };
 
-  if (isLoading || loading) {
+  if (isLoading || loadingLocal) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
         <center>
-          <Atom color="#32cd32" size="medium" text="" textColor="" />
+          <Atom color="#32cd32" size="medium" />
         </center>
       </div>
     );
   }
 
   if (error) {
-    return <p style={{ color: 'red', textAlign: 'center' }}>Error loading data.</p>;
+    return (
+      <p style={{ color: "red", textAlign: "center" }}>Error loading data.</p>
+    );
   }
 
   return (
     <div>
-      {/* Slides Section (hidden in print) */}
-      <div className="slides-section">
+      {/* Slides Section */}
+      <motion.div
+        className="slides-section"
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
         <Slides />
-      </div>
+      </motion.div>
 
-      {/* Print Button (hidden in print) */}
-      <div style={{ textAlign: 'right', margin: '10px' }} className="no-print">
+      {/* Print Button */}
+      {/* <div style={{ textAlign: "right", margin: "10px" }} className="no-print">
         <button
           onClick={handlePrint}
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#0275d8',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
+            padding: "10px 20px",
+            backgroundColor: "#0275d8",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
           }}
         >
           Print Page
         </button>
-      </div>
+      </div>*/}
 
-      {/* Table Display Section */}
-      <div style={{ maxWidth: '100%', width: '100%', padding: '10px' }}>
-        {Object.entries(grouped).map(([name, items]) => (
-          <div
-            key={name}
-            style={{
-              marginBottom: '30px',
-              border: '1px solid #aaa',
-              borderRadius: '5px',
-              overflow: 'hidden',
-            }}
-          >
-            <div
+      {/* Grouped Table */}
+      <div style={{ maxWidth: "100%", width: "100%", padding: "10px" }}>
+        {Object.entries(grouped).length === 0 ? (
+          <p style={{ textAlign: "center", color: "red", fontSize: "18px" }}>
+            No records found for your Function Name: <b>{userFunction}</b>
+          </p>
+        ) : (
+          Object.entries(grouped).map(([name, items]) => (
+            <motion.div
+              key={name}
               style={{
-                backgroundColor: '#0275d8',
-                color: 'white',
-                padding: '10px 15px',
-                fontSize: '18px',
+                marginBottom: "30px",
+                border: "1px solid #aaa",
+                borderRadius: "5px",
+                overflow: "hidden",
+              }}
+              initial={{ y: -100 }}
+              animate={{ y: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 120,
+                damping: 8,
               }}
             >
-              {name}
-            </div>
-
-            <div style={{ overflowX: 'auto' }}>
-              <table
-                width="100%"
-                border="1"
+              <motion.div
                 style={{
-                  borderCollapse: 'collapse',
-                  minWidth: '1200px',
-                  fontSize: '14px',
+                  backgroundColor: "#0275d8",
+                  color: "white",
+                  padding: "10px 15px",
+                  fontSize: "18px",
+                }}
+                initial={{
+                  y: -40,
+                  opacity: 0,
+                }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.2,
                 }}
               >
-                <thead>
-                  <tr style={{ backgroundColor: '#f1f1f1' }}>
-                    <th style={thStyle}>ஊர்</th>
-                    <th style={thStyle}>பழைய பணம்</th>
-                    <th style={thStyle}>புதிய பணம்</th>
-                    <th style={thStyle}>தடவை</th>
-                    <th style={thStyle}>திருமண விழா</th>
-                    <th style={thStyle}>நிலை</th>
-                  </tr>
-                </thead>
+                {name}
+              </motion.div>
 
-                <tbody>
-                  {items.map((item, index) => (
-                    <tr
-                      key={item.id || index}
-                      style={{
-                        textAlign: 'center',
-                        backgroundColor:
-                          index % 2 === 0 ? '#f7d4e7' : '#e2e2e2',
-                      }}
-                    >
-                      <td style={tdStyle}>{item.place}</td>
-                      <td style={tdStyle}>{item.old_amount}</td>
-                      <td style={tdStyle}>{item.new_amount}</td>
-                      <td style={tdStyle}>{item.given_amount_status}</td>
-                      <td style={tdStyle}>{item.function_name}</td>
-                      <td
+              <div style={{ overflowX: "auto" }}>
+                <table
+                  width="100%"
+                  border="1"
+                  style={{
+                    borderCollapse: "collapse",
+                    minWidth: "1200px",
+                    fontSize: "14px",
+                  }}
+                >
+                  <thead>
+                    <tr style={{ backgroundColor: "#f1f1f1" }}>
+                      <th style={thStyle}>ஊர்</th>
+                      <th style={thStyle}>பெயர்</th>
+                      <th style={thStyle}>பழைய பணம்</th>
+                      <th style={thStyle}>புதிய பணம்</th>
+                      <th style={thStyle}>தடவை</th>
+                      <th style={thStyle}>திருமண விழா</th>
+                      <th style={thStyle}>நிலை</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {items.map((item, index) => (
+                      <motion.tr
+                        key={item.id || index}
                         style={{
-                          ...tdStyle,
-                          color:
-                            item.status === 'pending' ? 'green' : 'red',
+                          backgroundColor:
+                            index % 2 === 0 ? "#f7d4e7" : "#e2e2e2",
+                        }}
+                        initial={{
+                          y: -40,
+                          opacity: 0,
+                        }}
+                        animate={{
+                          y: 0,
+                          opacity: 1,
+                        }}
+                        transition={{
+                          duration: 0.6,
+                          delay: 0.2,
                         }}
                       >
-                        {item.status === 'pending'
-                          ? 'நிலுவையில் உள்ளது'
-                          : 'நிறைவு'}
-                      </td>
-                      
-                    </tr>
-                  ))}
+                        <td style={tdStyle}>{item.place}</td>
+                        <td style={tdStyle}>{item.name}</td>
+                        <td style={tdStyle}>{item.old_amount}</td>
+                        <td style={tdStyle}>{item.new_amount}</td>
+                        <td style={tdStyle}>{item.given_amount_status}</td>
+                        <td style={tdStyle}>{item.function_name}</td>
+                        <td
+                          style={{
+                            ...tdStyle,
+                            color: item.status === "Pending" ? "green" : "red",
+                          }}
+                        >
+                          {item.status === "Pending"
+                            ? "நிலுவையில் உள்ளது"
+                            : "நிறைவு"}
+                        </td>
+                      </motion.tr>
+                    ))}
 
-                  <tr
-                    style={{
-                      backgroundColor: '#dff0d8',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    <td></td>
-                    <td></td>
-                    <td style={tdTotalStyle}>
-                      மொத்தம்:{' '}
-                      {items.reduce(
-                        (total, item) =>
-                          total + parseFloat(item.new_amount || 0),
-                        0
-                      )}
-                    </td>
-                    <td style={tdTotalStyle}></td>
-                    <td style={tdTotalStyle}></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        ))}
+                    <motion.tr
+                      style={{
+                        backgroundColor: "#dff0d8",
+                        fontWeight: "bold",
+                      }}
+                      initial={{
+                        y: -40,
+                        opacity: 0,
+                      }}
+                      animate={{
+                        y: 0,
+                        opacity: 1,
+                      }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.2,
+                      }}
+                    >
+                      <td></td>
+                      <td></td>
+                      <td style={tdTotalStyle}>
+                        மொத்தம்:{" "}
+                        {items.reduce(
+                          (total, item) =>
+                            total + parseFloat(item.new_amount || 0),
+                          0,
+                        )}
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </motion.tr>
+                  </tbody>
+                </table>
+              </div>
+              <ReactPaginate
+                previousLabel={"Previous"}
+                nextLabel={"Next"}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                onPageChange={handlePageClick}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                containerClassName={"pagination"}
+                pageClassName={"page-item"}
+                pageLinkClassName={"page-link"}
+                previousClassName={"page-item"}
+                previousLinkClassName={"page-link"}
+                nextClassName={"page-item"}
+                nextLinkClassName={"page-link"}
+                activeClassName={"active"}
+              />
+            </motion.div>
+          ))
+        )}
       </div>
 
       {/* PRINT STYLES */}
@@ -212,32 +304,12 @@ export const Home = ({ cart, setCart }) => {
             size: landscape;
             margin: 10mm;
           }
-
           body {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
-            background: white;
           }
-
-          /* Hide elements not needed in print */
-          .slides-section, .no-print, .navbar, .footer {
+          .slides-section, .no-print {
             display: none !important;
-          }
-
-          table {
-            width: 100% !important;
-            min-width: 100% !important;
-            font-size: 12px !important;
-          }
-
-          th, td {
-            border: 1px solid #000 !important;
-            padding: 8px !important;
-            text-align: center !important;
-          }
-
-          div {
-            overflow: visible !important;
           }
         }
       `}

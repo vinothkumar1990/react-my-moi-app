@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import data from "../assets/vinoth.json";
-import { FourSquare } from 'react-loading-indicators';
+import { FourSquare } from "react-loading-indicators";
 import "./Home.css";
 import useData from "./custom-hook/useData"; // Make sure this hook exists
+import { motion } from "framer-motion";
 
 export const VinothRelo = () => {
   const { products, error, isLoading } = useData(
@@ -15,7 +16,7 @@ export const VinothRelo = () => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const [mois, setMois] = useState([]);
@@ -25,7 +26,7 @@ export const VinothRelo = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       const filteredData = data.filter(
-        (item) => item.function_name === "வினோத் திருமணம்"
+        (item) => item.function_name === "வினோத் திருமணம்",
       );
       setMois(filteredData);
       setLoading(false);
@@ -35,9 +36,7 @@ export const VinothRelo = () => {
 
   // If products fetched successfully, filter only "வினோத் திருமணம்"
   const filteredProducts =
-    products?.filter(
-      (item) => item.function_name === "வினோத் திருமணம்"
-    ) || [];
+    products?.filter((item) => item.function_name === "வினோத் திருமணம்") || [];
 
   const grouped = filteredProducts.reduce((acc, curr) => {
     if (!acc[curr.place]) acc[curr.place] = [];
@@ -45,31 +44,54 @@ export const VinothRelo = () => {
     return acc;
   }, {});
 
-  const thStyle = { padding: '6px', borderBottom: '1px solid #ccc', textAlign: 'center' };
-  const tdStyle = { padding: '6px', borderBottom: '1px solid #eee', textAlign: 'center' };
-  const tdTotalStyle = { padding: '6px', borderBottom: '1px solid #eee', textAlign: 'center', color: '#39740c', fontWeight: 'bold' };
+  const thStyle = {
+    padding: "6px",
+    borderBottom: "1px solid #ccc",
+    textAlign: "center",
+  };
+  const tdStyle = {
+    padding: "6px",
+    borderBottom: "1px solid #eee",
+    textAlign: "center",
+  };
+  const tdTotalStyle = {
+    padding: "6px",
+    borderBottom: "1px solid #eee",
+    textAlign: "center",
+    color: "#39740c",
+    fontWeight: "bold",
+  };
 
   // Export CSV for Vinoth Thirumanam only
   const exportToCSV = () => {
-    const headers = ['ஊர்', 'பெயர்', 'பழைய பணம்', 'புதிய பணம்', 'தடவை', 'திருமண விழா'];
-    const rows = filteredProducts.map(item => [
+    const headers = [
+      "ஊர்",
+      "பெயர்",
+      "பழைய பணம்",
+      "புதிய பணம்",
+      "தடவை",
+      "திருமண விழா",
+    ];
+    const rows = filteredProducts.map((item) => [
       item.place,
       item.name,
       item.old_amount,
       item.new_amount,
       item.given_amount_status,
-      item.function_name
+      item.function_name,
     ]);
 
     const csvContent = [
-      '\uFEFF' + headers.join(','),
-      ...rows.map(row => row.map(f => `"${String(f).replace(/"/g, '""')}"`).join(','))
-    ].join('\n');
+      "\uFEFF" + headers.join(","),
+      ...rows.map((row) =>
+        row.map((f) => `"${String(f).replace(/"/g, '""')}"`).join(","),
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', 'vinoth_thirumanam_data.csv');
+    link.setAttribute("download", "vinoth_thirumanam_data.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -79,23 +101,155 @@ export const VinothRelo = () => {
 
   if (loading || isLoading) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
         <FourSquare color="#32cd32" size="medium" />
       </div>
     );
   }
 
   return (
-    <div className="vinoth-container">
-      <div className="button-container no-print">
-        <button className="csv-btn" onClick={exportToCSV}>📄 Download CSV</button>
-        <button className="print-btn" onClick={handlePrint}>🖨️ Print</button>
-      </div>
+    <motion.div
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      transition={{
+        duration: 0.8,
+      }}
+      className="vinoth-container"
+    >
+      <motion.div
+        className="button-container no-print"
+        initial={{
+          y: -40,
+          opacity: 0,
+        }}
+        animate={{
+          y: 0,
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.6,
+          delay: 0.2,
+        }}
+        style={{
+          textAlign: "right",
+          margin: "10px",
+        }}
+      >
+        <motion.button
+          initial={{
+            opacity: 0,
+            scale: 0.8,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          whileHover={{
+            scale: 1.08,
+          }}
+          whileTap={{
+            scale: 0.95,
+          }}
+          className="csv-btn"
+          onClick={exportToCSV}
+        >
+          📄 Download CSV
+        </motion.button>
 
-      <div className="table-section">
+        <motion.button
+          initial={{
+            opacity: 0,
+            scale: 0.8,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          whileHover={{
+            scale: 1.08,
+          }}
+          whileTap={{
+            scale: 0.95,
+          }}
+          className="print-btn"
+          onClick={handlePrint}
+        >
+          🖨️ Print
+        </motion.button>
+      </motion.div>
+
+      <motion.div
+        className="table-section"
+        initial={{
+          opacity: 0,
+          y: 50,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.6,
+        }}
+      >
         {Object.entries(grouped).map(([place, items]) => (
-          <div key={place} className="place-section">
-            <div className="place-header">{place}</div>
+          <motion.div
+            key={place}
+            initial={{
+              opacity: 0,
+              y: 50,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.6,
+            }}
+            style={{
+              marginBottom: "30px",
+              border: "1px solid #aaa",
+              borderRadius: "8px",
+              overflow: "hidden",
+            }}
+            className="place-section"
+          >
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 50,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.6,
+              }}
+              className="place-header"
+            >
+              {place}
+            </motion.div>
             <div className="table-wrapper">
               <table className="vinoth-table">
                 <thead>
@@ -110,33 +264,82 @@ export const VinothRelo = () => {
                 </thead>
                 <tbody>
                   {items.map((item, index) => (
-                    <tr key={item.id} style={{ backgroundColor: index % 2 === 0 ? '#f7d4e7' : '#e2e2e2' }}>
+                    <motion.tr
+                      key={item.id}
+                      style={{
+                        backgroundColor:
+                          index % 2 === 0 ? "#f7d4e7" : "#e2e2e2",
+                      }}
+                      initial={{
+                        opacity: 0,
+                        scale: 0.8,
+                        y: 30,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.6,
+                        type: "spring",
+                        stiffness: 150,
+                        damping: 12,
+                      }}
+                      whileHover={{
+                        scale: 1.08,
+                      }}
+                      whileTap={{
+                        scale: 0.95,
+                      }}
+                    >
                       <td style={tdStyle}>{item.place}</td>
                       <td style={tdStyle}>{item.name}</td>
                       <td style={tdStyle}>{item.old_amount}</td>
                       <td style={tdStyle}>{item.new_amount}</td>
                       <td style={tdStyle}>{item.given_amount_status}</td>
                       <td style={tdStyle}>{item.function_name}</td>
-                    </tr>
+                    </motion.tr>
                   ))}
-                  <tr style={{ backgroundColor: '#dff0d8', fontWeight: 'bold' }}>
+                  <motion.tr
+                    style={{ backgroundColor: "#dff0d8", fontWeight: "bold" }}
+                    initial={{
+                      opacity: 0,
+                      y: 50,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.6,
+                    }}
+                  >
                     <td></td>
                     <td></td>
                     <td style={tdTotalStyle}>
-                      மொத்தம் பழைய பணம்: {items.reduce((t, i) => t + parseFloat(i.old_amount || 0), 0)}
+                      மொத்தம் பழைய பணம்:{" "}
+                      {items.reduce(
+                        (t, i) => t + parseFloat(i.old_amount || 0),
+                        0,
+                      )}
                     </td>
                     <td style={tdTotalStyle}>
-                      மொத்தம் புதிய பணம்: {items.reduce((t, i) => t + parseFloat(i.new_amount || 0), 0)}
+                      மொத்தம் புதிய பணம்:{" "}
+                      {items.reduce(
+                        (t, i) => t + parseFloat(i.new_amount || 0),
+                        0,
+                      )}
                     </td>
                     <td></td>
                     <td></td>
-                  </tr>
+                  </motion.tr>
                 </tbody>
               </table>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* PRINT STYLES */}
       <style>
@@ -169,6 +372,6 @@ export const VinothRelo = () => {
           }
         `}
       </style>
-    </div>
+    </motion.div>
   );
 };

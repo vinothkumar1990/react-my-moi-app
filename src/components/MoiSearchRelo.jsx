@@ -1,8 +1,11 @@
 import React, { useState, useRef, useCallback, memo } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { useNavigate } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { Atom } from "react-loading-indicators";
 import useData from "./custom-hook/useData";
+
 import {
   FormControl,
   InputLabel,
@@ -11,32 +14,52 @@ import {
   Box,
   TextField,
   IconButton,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  InputAdornment,
   Button,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import MicIcon from "@mui/icons-material/Mic";
-import EditIcon from "@mui/icons-material/Edit";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-
-const paginationModel = { page: 0, pageSize: 20 };
 
 // -------------------
 // INPUT WITH MIC
 // -------------------
 const SearchInput = memo(
-  ({ label, value, setValue, field, onMicClick, stopVoice, listeningField }) => {
+  ({
+    label,
+    value,
+    setValue,
+    field,
+    onMicClick,
+    stopVoice,
+    listeningField,
+  }) => {
+    const isListening = listeningField === field;
+
     return (
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <TextField
           fullWidth
           label={label}
           value={value}
+          size="small"
           onChange={(e) => {
             stopVoice();
             setValue(e.target.value);
           }}
           onFocus={stopVoice}
-          size="small"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="primary" />
+              </InputAdornment>
+            ),
+          }}
         />
 
         <IconButton
@@ -50,30 +73,30 @@ const SearchInput = memo(
             borderRadius: "8px",
             height: "40px",
             width: "40px",
+            backgroundColor: isListening ? "#ffe6e6" : "#e3f2fd",
           }}
         >
           <motion.div
             animate={{
-              scale: listeningField === field ? [1, 1.3, 1] : 1,
+              scale: isListening ? [1, 1.4, 1] : 1,
             }}
-            transition={{ repeat: Infinity, duration: 1 }}
+            transition={{
+              repeat: isListening ? Infinity : 0,
+              duration: 1,
+            }}
           >
-            <MicIcon
-              color={listeningField === field ? "error" : "primary"}
-            />
+            <MicIcon color={isListening ? "error" : "primary"} />
           </motion.div>
         </IconButton>
       </Box>
     );
-  }
+  },
 );
 
 // -------------------
 // MAIN COMPONENT
 // -------------------
 export const MoiSearchRelo = () => {
-  const navigate = useNavigate();
-
   const { products, error, isLoading } = useData(
     "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/mois",
     {
@@ -84,59 +107,71 @@ export const MoiSearchRelo = () => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const [statusFilter, setStatusFilter] = useState("all");
   const [nameSearch, setNameSearch] = useState("");
   const [placeSearch, setPlaceSearch] = useState("");
-  const [amountFilter, setAmountFilter] = useState(0);
   const [listeningField, setListeningField] = useState(null);
+  const navigate = useNavigate();
+  // -------------------
+  // Columns
+  // -------------------
+  const columns = [
+    { field: "place", headerName: "ஊர்", width: 230 },
+    { field: "name", headerName: "பெயர்", width: 300 },
+    { field: "old_amount", headerName: "பழைய பணம்", width: 150 },
+    { field: "new_amount", headerName: "புதிய பணம்", width: 150 },
+    { field: "given_amount_status", headerName: "தடவை", width: 90 },
+    { field: "function_name", headerName: "திருமண விழா", width: 250 },
+    {
+      field: "status",
+      headerName: "நிலை",
+      width: 200,
+      renderCell: (params) => (
+        <span
+          style={{
+            color:
+              params.value === "Pending" || params.value === "pending"
+                ? "orange"
+                : "green",
+            fontWeight: "bold",
+          }}
+        >
+          {params.value === "Pending" || params.value === "pending"
+            ? "நிலுவையில் உள்ளது"
+            : "நிறைவு"}
+        </span>
+      ),
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 120,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <IconButton
+          color="primary"
+          onClick={() => navigate(`/update_relo/${params.id}`)}
+        >
+          <EditIcon />
+        </IconButton>
+      ),
+    },
+  ];
+
+  const paginationModel = { page: 0, pageSize: 20 };
 
   const recognitionRef = useRef(null);
-
-  // 🎤 VOICE COMMAND AI
-  const handleVoiceCommand = (text, field) => {
-    const lower = text.toLowerCase();
-
-    // STATUS
-    if (
-      lower.includes("pending") ||
-      lower.includes("நிலுவை") ||
-      lower.includes("நிலுவையில்")
-    ) {
-      setStatusFilter("Pending");
-    } else if (
-      lower.includes("completed") ||
-      lower.includes("நிறைவு") ||
-      lower.includes("முடிந்த")
-    ) {
-      setStatusFilter("Completed");
-    }
-
-    // AMOUNT
-    const amountMatch = lower.match(/\d+/);
-    if (amountMatch && (lower.includes("மேல்") || lower.includes("above"))) {
-      setAmountFilter(Number(amountMatch[0]));
-    }
-
-    // ✅ ONLY UPDATE CORRECT FIELD
-    if (field === "name") {
-      setNameSearch(text);
-    } else if (field === "place") {
-      setPlaceSearch(text);
-    }
-  };
 
   // 🎤 START VOICE
   const startVoiceSearch = useCallback((field) => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
-      alert("Voice not supported");
-      return;
-    }
+    if (!SpeechRecognition) return alert("Voice not supported");
 
     if (recognitionRef.current) recognitionRef.current.stop();
 
@@ -150,14 +185,14 @@ export const MoiSearchRelo = () => {
     recognition.onresult = (event) => {
       const text = event.results[0][0].transcript;
 
-      // ✅ pass field here
-      handleVoiceCommand(text, field);
+      if (field === "name") setNameSearch(text);
+      if (field === "place") setPlaceSearch(text);
     };
 
     recognition.onend = () => setListeningField(null);
   }, []);
 
-  // 🎤 STOP
+  // 🎤 STOP VOICE
   const stopVoice = useCallback(() => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
@@ -176,134 +211,421 @@ export const MoiSearchRelo = () => {
   }
 
   if (error) {
-    return <div style={{ textAlign: "center" }}>Error loading data</div>;
+    return <div style={{ color: "red" }}>⚠️ {error.message}</div>;
   }
 
-  // ROWS
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  const userFunctionName = loggedInUser?.function_name || "";
+
   const rows = (products || []).map((row, index) => ({
     id: row.id || index + 1,
     ...row,
   }));
 
-  // FILTER
-  const finalFilteredRows = rows.filter((row) => {
+  const functionFilteredRows = rows;
+
+  const statusFilteredRows =
+    statusFilter === "all"
+      ? functionFilteredRows
+      : functionFilteredRows.filter(
+          (r) => (r.status || "").toLowerCase() === statusFilter.toLowerCase(),
+        );
+
+  const finalFilteredRows = statusFilteredRows.filter((row) => {
     const name = row.name?.toLowerCase() || "";
     const place = row.place?.toLowerCase() || "";
 
     const nameQuery = nameSearch.toLowerCase();
     const placeQuery = placeSearch.toLowerCase();
 
-    const matchStatus =
-      statusFilter === "all" ||
-      row.status?.toLowerCase() === statusFilter.toLowerCase();
+    if (!nameQuery && !placeQuery) return true;
+    if (nameQuery && !placeQuery) return name.includes(nameQuery);
+    if (!nameQuery && placeQuery) return place.includes(placeQuery);
 
-    const matchName = !nameQuery || name.includes(nameQuery);
-    const matchPlace = !placeQuery || place.includes(placeQuery);
-
-    const matchAmount =
-      amountFilter === 0 ||
-      Number(row.new_amount || 0) >= amountFilter;
-
-    return matchStatus && matchName && matchPlace && matchAmount;
+    return name.includes(nameQuery) && place.includes(placeQuery);
   });
+  const totalRecords = finalFilteredRows.length;
+  const completedCount = finalFilteredRows.filter(
+    (item) =>
+      item.status === "Completed" ||
+      item.status === "completed" ||
+      item.status === "" ||
+      item.status == null,
+  ).length;
+  const pendingCount = finalFilteredRows.filter(
+    (item) =>
+      item.status === "Pending" ||
+      item.status === "" ||
+      item.status == null ||
+      item.status === "pending",
+  ).length;
+  const newAmount = finalFilteredRows.reduce(
+    (sum, item) => sum + Number(item.new_amount || 0),
 
-  const handleEdit = (id) => {
-    navigate(`/update_relo/${id}`);
-  };
+    0,
+  );
 
-  const columns = [
-    { field: "place", headerName: "ஊர்", width: 220 },
-    { field: "name", headerName: "பெயர்", width: 260 },
-    { field: "old_amount", headerName: "பழைய", width: 120 },
-    { field: "new_amount", headerName: "புதிய", width: 120 },
-    { field: "given_amount_status", headerName: "தடவை", width: 90 },
-    { field: "function_name", headerName: "விழா", width: 220 },
-    {
-      field: "status",
-      headerName: "நிலை",
-      width: 150,
-      renderCell: (params) => {
-        const value = params.value?.toLowerCase();
-        return (
-          <span
-            style={{
-              color: value === "pending" ? "orange" : "green",
-              fontWeight: "bold",
-            }}
-          >
-            {value === "pending" ? "நிலுவையில்" : "நிறைவு"}
-          </span>
-        );
-      },
-    },
-    {
-      field: "actions",
-      headerName: "Edit",
-      width: 120,
-      renderCell: (params) => (
-        <Button
-          variant="contained"
-          size="small"
-          startIcon={<EditIcon />}
-          onClick={() => handleEdit(params.row.id)}
-        >
-          Edit
-        </Button>
-      ),
-    },
-  ];
+  const oldAmount = finalFilteredRows.reduce(
+    (sum, item) => sum + Number(item.old_amount || 0),
+
+    0,
+  );
+  const totalAmount = newAmount + oldAmount;
+
+  const totalPendingAmount = finalFilteredRows
+    .filter((item) => item.status === "Pending" || item.status === "pending")
+    .reduce((sum, item) => {
+      return sum + Number(item.new_amount || 0);
+    }, 0);
+
+  const totalCompletedAmount = finalFilteredRows
+    .filter(
+      (item) => item.status === "Completed" || item.status === "completed",
+    )
+    .reduce((sum, item) => {
+      return sum + Number(item.new_amount || 0);
+    }, 0);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          gap: 2,
-          p: 2,
+          background: "linear-gradient(90deg,#1565c0,#42a5f5)",
+          color: "#fff",
+          p: 3,
+          borderRadius: 3,
+          mb: 3,
+          boxShadow: 4,
         }}
       >
-        <SearchInput
-          label="பெயர் தேடல்"
-          value={nameSearch}
-          setValue={setNameSearch}
-          field="name"
-          onMicClick={startVoiceSearch}
-          stopVoice={stopVoice}
-          listeningField={listeningField}
-        />
+        <Typography variant="h4" fontWeight="bold">
+          🎉 மொய் பதிவுகளை தேடவும் மற்றும் நிர்வகிக்கவும்.
+        </Typography>
 
-        <SearchInput
-          label="ஊர் தேடல்"
-          value={placeSearch}
-          setValue={setPlaceSearch}
-          field="place"
-          onMicClick={startVoiceSearch}
-          stopVoice={stopVoice}
-          listeningField={listeningField}
-        />
-
-        <FormControl fullWidth>
-          <InputLabel>நிலை</InputLabel>
-          <Select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            size="small"
-          >
-            <MenuItem value="all">அனைத்தும்</MenuItem>
-            <MenuItem value="Pending">நிலுவையில்</MenuItem>
-            <MenuItem value="Completed">நிறைவு</MenuItem>
-          </Select>
-        </FormControl>
+        {/*<Typography
+    variant="body1"
+    sx={{ mt: 1 }}
+  >
+    மொய் பதிவுகளை தேடவும், Filter செய்யவும் மற்றும் நிர்வகிக்கவும்.
+  </Typography>*/}
       </Box>
+      {/* ================= Dashboard Cards ================= */}
 
-      <Paper sx={{ width: "100%", overflowX: "auto" }}>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        {/* Total Records */}
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={4}
+            sx={{
+              borderRadius: 3,
+              background: "#E3F2FD",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                📋 மொத்த மொய்
+              </Typography>
+
+              <Typography variant="h4" fontWeight="bold" color="primary">
+                {totalRecords}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Completed */}
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={4}
+            sx={{
+              borderRadius: 3,
+              background: "#E8F5E9",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                ✅ நிறைவு
+              </Typography>
+
+              <Typography variant="h4" fontWeight="bold" color="success.main">
+                {completedCount}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Pending */}
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={4}
+            sx={{
+              borderRadius: 3,
+              background: "#FFF8E1",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                ⏳ நிலுவையில்
+              </Typography>
+
+              <Typography variant="h4" fontWeight="bold" color="warning.main">
+                {pendingCount}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* old Amount */}
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={4}
+            sx={{
+              borderRadius: 3,
+              background: "#F3E5F5",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                💰 பழைய மொத்த தொகை
+              </Typography>
+
+              <Typography variant="h4" fontWeight="bold" color="secondary">
+                ₹ {oldAmount.toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        {/* new Amount */}
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={4}
+            sx={{
+              borderRadius: 3,
+              background: "#F3E5F5",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                💰 புதிய மொத்த தொகை
+              </Typography>
+
+              <Typography variant="h4" fontWeight="bold" color="secondary">
+                ₹ {newAmount.toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Total Amount */}
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={4}
+            sx={{
+              borderRadius: 3,
+              background: "#F3E5F5",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                💰 மொத்த தொகை
+              </Typography>
+
+              <Typography variant="h4" fontWeight="bold" color="secondary">
+                ₹ {totalAmount.toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* pending Amount */}
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={4}
+            sx={{
+              borderRadius: 3,
+              background: "#F3E5F5",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                💰 நிலுவையில் உள்ள மொத்த தொகை
+              </Typography>
+
+              <Typography variant="h4" fontWeight="bold" color="secondary">
+                ₹ {totalPendingAmount.toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        {/* Completed Amount */}
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            elevation={4}
+            sx={{
+              borderRadius: 3,
+              background: "#F3E5F5",
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                💰 நிறைவு செய்த மொத்த தொகை
+              </Typography>
+
+              <Typography variant="h4" fontWeight="bold" color="secondary">
+                ₹ {totalCompletedAmount.toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+      {/* FILTER */}
+      <Card
+        elevation={5}
+        sx={{
+          borderRadius: 4,
+          mb: 3,
+          p: 1,
+        }}
+      >
+        <CardContent>
+          <Typography variant="h6" fontWeight="bold" mb={3}>
+            🔍 தேடல்
+          </Typography>
+
+          <Grid container spacing={2}>
+            {/* Name Search */}
+
+            <Grid item xs={12} md={4}>
+              <SearchInput
+                label="பெயர் தேடல்"
+                value={nameSearch}
+                setValue={setNameSearch}
+                field="name"
+                onMicClick={startVoiceSearch}
+                stopVoice={stopVoice}
+                listeningField={listeningField}
+              />
+            </Grid>
+
+            {/* Place Search */}
+
+            <Grid item xs={12} md={4}>
+              <SearchInput
+                label="ஊர் தேடல்"
+                value={placeSearch}
+                setValue={setPlaceSearch}
+                field="place"
+                onMicClick={startVoiceSearch}
+                stopVoice={stopVoice}
+                listeningField={listeningField}
+              />
+            </Grid>
+
+            {/* Status */}
+
+            <Grid item xs={12} md={2}>
+              <FormControl fullWidth size="small">
+                <InputLabel>நிலை</InputLabel>
+
+                <Select
+                  value={statusFilter}
+                  label="நிலை"
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <MenuItem value="all">அனைத்தும்</MenuItem>
+
+                  <MenuItem value="Pending">நிலுவையில்</MenuItem>
+
+                  <MenuItem value="Completed">நிறைவு</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            {/* Clear Button */}
+
+            <Grid item xs={12} md={2} display="flex" alignItems="center">
+              <Button
+                fullWidth
+                variant="contained"
+                color="error"
+                startIcon={<RestartAltIcon />}
+                sx={{ height: 40 }}
+                onClick={() => {
+                  setNameSearch("");
+                  setPlaceSearch("");
+                  setStatusFilter("all");
+                  stopVoice();
+                }}
+              >
+                Clear
+              </Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
+      {/* TABLE */}
+      <Paper
+        elevation={6}
+        sx={{
+          width: "100%",
+          borderRadius: 4,
+          overflow: "hidden",
+          p: 1,
+        }}
+      >
         <DataGrid
           rows={finalFilteredRows}
           columns={columns}
-          initialState={{ pagination: { paginationModel } }}
-          pageSizeOptions={[20, 50, 100]}
+          pageSizeOptions={[10, 20, 50, 100]}
+          initialState={{
+            pagination: {
+              paginationModel,
+            },
+          }}
+          disableRowSelectionOnClick
           autoHeight
+          rowHeight={55}
+          sx={{
+            borderRadius: 3,
+
+            "& .MuiDataGrid-columnHeader": {
+              backgroundColor: "#1976d2",
+            },
+
+            "& .MuiDataGrid-columnHeaderTitle": {
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: "15px",
+            },
+
+            "& .MuiDataGrid-menuIcon button": {
+              color: "#fff",
+            },
+
+            "& .MuiDataGrid-sortIcon": {
+              color: "#fff",
+            },
+
+            "& .MuiDataGrid-iconSeparator": {
+              color: "#fff",
+            },
+
+            "& .MuiDataGrid-row:nth-of-type(even)": {
+              backgroundColor: "#fafafa",
+            },
+
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#E3F2FD",
+            },
+          }}
         />
       </Paper>
     </motion.div>

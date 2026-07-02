@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import data from "../assets/pending.json";
-import { Atom } from 'react-loading-indicators';
+import { Atom } from "react-loading-indicators";
 import "./Home.css";
 import useData from "./custom-hook/useData";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export const PendingGroupRelo = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export const PendingGroupRelo = () => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const [mois, setMois] = useState([]);
@@ -40,7 +41,8 @@ export const PendingGroupRelo = () => {
   // Filter pending records
   const filteredProducts =
     (products?.filter((item) => item.status === "pending") ||
-      mois.filter((item) => item.status === "pending")) ?? [];
+      mois.filter((item) => item.status === "pending")) ??
+    [];
 
   // Group by name
   const grouped = filteredProducts.reduce((acc, curr) => {
@@ -78,10 +80,21 @@ export const PendingGroupRelo = () => {
   }
 
   return (
-    <div className="pending-container">
+    <motion.div
+      className="pending-container"
+      initial={{ x: -100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
       {/* Print button */}
-      <div className="no-print" style={{ textAlign: "right", margin: "10px 20px" }}>
-        <button
+      <motion.div
+        className="no-print"
+        style={{ textAlign: "right", margin: "10px 20px" }}
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.button
           onClick={handlePrint}
           style={{
             backgroundColor: "#0275d8",
@@ -91,15 +104,37 @@ export const PendingGroupRelo = () => {
             borderRadius: "5px",
             cursor: "pointer",
           }}
+          initial={{
+            opacity: 0,
+            scale: 0.8,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          whileHover={{
+            scale: 1.08,
+          }}
+          whileTap={{
+            scale: 0.95,
+          }}
         >
           🖨️ Print
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
       {/* Table Display */}
       <div style={{ width: "100%", padding: "10px" }}>
         {Object.entries(grouped).map(([name, items]) => (
-          <div
+          <motion.div
             key={name}
             style={{
               marginBottom: "20px",
@@ -107,22 +142,35 @@ export const PendingGroupRelo = () => {
               borderRadius: "5px",
               overflow: "hidden",
             }}
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            <div
+            <motion.div
               style={{
                 backgroundColor: "#0275d8",
                 color: "white",
                 padding: "10px 15px",
                 fontSize: "18px",
               }}
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
             >
               {name}
-            </div>
+            </motion.div>
 
-            <div style={{ overflowX: "auto" }}>
-              <table
+            <motion.div
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.table
                 style={{ borderCollapse: "collapse", width: "100%" }}
                 border="1"
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.8 }}
               >
                 <thead>
                   <tr style={{ backgroundColor: "#f1f1f1" }}>
@@ -137,12 +185,15 @@ export const PendingGroupRelo = () => {
                 </thead>
                 <tbody>
                   {items.map((item, index) => (
-                    <tr
+                    <motion.tr
                       key={item.id || index}
                       style={{
                         backgroundColor:
                           index % 2 === 0 ? "#f7d4e7" : "#e2e2e2",
                       }}
+                      initial={{ x: 100, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.8 }}
                     >
                       <td style={tdStyle}>{item.place}</td>
                       <td style={tdStyle}>{item.old_amount}</td>
@@ -169,14 +220,17 @@ export const PendingGroupRelo = () => {
                           Edit
                         </button>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
                   {/* Total Row */}
-                  <tr
+                  <motion.tr
                     style={{
                       backgroundColor: "#dff0d8",
                       fontWeight: "bold",
                     }}
+                    initial={{ x: 100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.8 }}
                   >
                     <td></td>
                     <td></td>
@@ -186,7 +240,7 @@ export const PendingGroupRelo = () => {
                         .reduce(
                           (total, item) =>
                             total + parseFloat(item.new_amount || 0),
-                          0
+                          0,
                         )
                         .toLocaleString("ta-IN")}
                     </td>
@@ -194,11 +248,11 @@ export const PendingGroupRelo = () => {
                     <td></td>
                     <td></td>
                     <td className="no-print"></td>
-                  </tr>
+                  </motion.tr>
                 </tbody>
-              </table>
-            </div>
-          </div>
+              </motion.table>
+            </motion.div>
+          </motion.div>
         ))}
       </div>
 
@@ -243,6 +297,6 @@ export const PendingGroupRelo = () => {
         }
       `}
       </style>
-    </div>
+    </motion.div>
   );
 };

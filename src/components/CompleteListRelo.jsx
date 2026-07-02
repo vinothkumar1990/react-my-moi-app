@@ -3,6 +3,7 @@ import data from "../assets/pending.json";
 import { BlinkBlur } from "react-loading-indicators";
 import useData from "./custom-hook/useData"; // ✅ Make sure this hook file exists
 import "./Home.css";
+import { motion } from "framer-motion";
 
 export const CompleteListRelo = () => {
   const { products, error, isLoading } = useData(
@@ -15,7 +16,7 @@ export const CompleteListRelo = () => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const [mois, setMois] = useState([]);
@@ -37,7 +38,7 @@ export const CompleteListRelo = () => {
 
   // ✅ Filter only pending status
   const pendingMois = mois.filter(
-    (item) => item.status && item.status.toLowerCase() === "completed"
+    (item) => item.status && item.status.toLowerCase() === "completed",
   );
 
   // ✅ Group pending records by function name
@@ -95,10 +96,19 @@ export const CompleteListRelo = () => {
 
   // ✅ Table rendering
   return (
-    <div>
+    <motion.div
+      initial={{ x: 100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
       {/* ✅ Print button */}
-      <div style={{ textAlign: "right", margin: "10px" }}>
-        <button
+      <motion.div
+        style={{ textAlign: "right", margin: "10px" }}
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.button
           onClick={handlePrint}
           style={{
             padding: "8px 15px",
@@ -108,14 +118,41 @@ export const CompleteListRelo = () => {
             borderRadius: "5px",
             cursor: "pointer",
           }}
+          initial={{
+            opacity: 0,
+            scale: 0.8,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          whileHover={{
+            scale: 1.08,
+          }}
+          whileTap={{
+            scale: 0.95,
+          }}
         >
           🖨 Print
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
-      <div style={{ width: "100%", padding: "10px" }}>
+      <motion.div
+        style={{ width: "100%", padding: "10px" }}
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
         {Object.entries(grouped).map(([function_name, items]) => (
-          <div
+          <motion.div
             key={function_name}
             style={{
               marginBottom: "30px",
@@ -123,19 +160,30 @@ export const CompleteListRelo = () => {
               borderRadius: "5px",
               overflow: "hidden",
             }}
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            <div
+            <motion.div
               style={{
                 backgroundColor: "#0275d8",
                 color: "white",
                 padding: "10px 15px",
                 fontSize: "18px",
               }}
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
             >
               {function_name}
-            </div>
+            </motion.div>
 
-            <div style={{ overflowX: "auto" }}>
+            <motion.div
+              style={{ overflowX: "auto" }}
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
               <table
                 width="100%"
                 border="1"
@@ -158,12 +206,15 @@ export const CompleteListRelo = () => {
                 </thead>
                 <tbody>
                   {items.map((item, index) => (
-                    <tr
+                    <motion.tr
                       key={item.id || index}
                       style={{
                         backgroundColor:
                           index % 2 === 0 ? "#f7d4e7" : "#e2e2e2",
                       }}
+                      initial={{ x: 100, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.8 }}
                     >
                       <td style={tdStyle}>{item.place}</td>
                       <td style={tdStyle}>{item.name}</td>
@@ -171,11 +222,16 @@ export const CompleteListRelo = () => {
                       <td style={tdStyle}>{item.new_amount}</td>
                       <td style={tdStyle}>{item.given_amount_status}</td>
                       <td style={tdStyle}>{item.function_name}</td>
-                    </tr>
+                    </motion.tr>
                   ))}
 
                   {/* ✅ Total Row */}
-                  <tr style={{ backgroundColor: "#dff0d8" }}>
+                  <motion.tr
+                    style={{ backgroundColor: "#dff0d8" }}
+                    initial={{ x: 100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.8 }}
+                  >
                     <td></td>
                     <td></td>
                     <td style={tdTotalStyle}>
@@ -184,7 +240,7 @@ export const CompleteListRelo = () => {
                         .reduce(
                           (total, item) =>
                             total + parseFloat(item.old_amount || 0),
-                          0
+                          0,
                         )
                         .toFixed(0)}
                     </td>
@@ -194,19 +250,19 @@ export const CompleteListRelo = () => {
                         .reduce(
                           (total, item) =>
                             total + parseFloat(item.new_amount || 0),
-                          0
+                          0,
                         )
                         .toFixed(0)}
                     </td>
                     <td style={tdTotalStyle}></td>
                     <td style={tdTotalStyle}></td>
-                  </tr>
+                  </motion.tr>
                 </tbody>
               </table>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* ✅ Print Styles */}
       <style>
@@ -243,6 +299,6 @@ export const CompleteListRelo = () => {
           }
         `}
       </style>
-    </div>
+    </motion.div>
   );
 };

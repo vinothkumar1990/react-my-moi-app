@@ -12,6 +12,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "./Home.css";
+import { motion } from "framer-motion";
 const MoiRow = lazy(() => import("./MoiRow"));
 
 export const Relo = () => {
@@ -26,7 +27,7 @@ export const Relo = () => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const lastRowRef = useRef(null);
@@ -61,7 +62,7 @@ export const Relo = () => {
                   "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
                 "Content-Type": "application/json",
               },
-            }
+            },
           )
           .then(() => {
             const newProductList = products.filter((p) => p.id !== id);
@@ -70,18 +71,22 @@ export const Relo = () => {
           })
           .catch((error) => {
             console.error("Delete error:", error);
-            Swal.fire("Error!", "Something went wrong while deleting.", "error");
+            Swal.fire(
+              "Error!",
+              "Something went wrong while deleting.",
+              "error",
+            );
           });
       }
     });
   };
 
   const handleEdit = useCallback(
-  (id) => {
-    navigate(`/update_relo/${id}`);
-  },
-  [navigate]
-);
+    (id) => {
+      navigate(`/update_relo/${id}`);
+    },
+    [navigate],
+  );
 
   // ✅ Define Tamil order
   const functionOrder = [
@@ -92,36 +97,43 @@ export const Relo = () => {
 
   // ✅ Sort by function_name order
   const sortedProducts = useMemo(() => {
-  return [...products].sort((a, b) => {
-    const indexA = functionOrder.indexOf(a.function_name);
-    const indexB = functionOrder.indexOf(b.function_name);
+    return [...products].sort((a, b) => {
+      const indexA = functionOrder.indexOf(a.function_name);
+      const indexB = functionOrder.indexOf(b.function_name);
 
-    if (indexA === -1 && indexB === -1) return 0;
-    if (indexA === -1) return 1;
-    if (indexB === -1) return -1;
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
 
-    return indexA - indexB;
-  });
-}, [products]);
+      return indexA - indexB;
+    });
+  }, [products]);
 
   // ✅ Totals
   const totalOldAmount = useMemo(() => {
-  return sortedProducts.reduce(
-    (sum, item) => sum + Number(item.old_amount || 0),
-    0
-  );
-}, [sortedProducts]);
+    return sortedProducts.reduce(
+      (sum, item) => sum + Number(item.old_amount || 0),
+      0,
+    );
+  }, [sortedProducts]);
 
-const totalNewAmount = useMemo(() => {
-  return sortedProducts.reduce(
-    (sum, item) => sum + Number(item.new_amount || 0),
-    0
-  );
-}, [sortedProducts]);
+  const totalNewAmount = useMemo(() => {
+    return sortedProducts.reduce(
+      (sum, item) => sum + Number(item.new_amount || 0),
+      0,
+    );
+  }, [sortedProducts]);
 
   // ✅ Export CSV
   const exportToCSV = () => {
-    const headers = ["ஊர்", "பெயர்", "பழைய பணம்", "புதிய பணம்", "தடவை", "திருமண விழா"];
+    const headers = [
+      "ஊர்",
+      "பெயர்",
+      "பழைய பணம்",
+      "புதிய பணம்",
+      "தடவை",
+      "திருமண விழா",
+    ];
     const rows = sortedProducts.map((item) => [
       item.place,
       item.name,
@@ -136,7 +148,7 @@ const totalNewAmount = useMemo(() => {
     const csvContent = [
       "\uFEFF" + headers.join(","), // UTF-8 BOM
       ...rows.map((r) =>
-        r.map((f) => `"${String(f || "").replace(/"/g, '""')}"`).join(",")
+        r.map((f) => `"${String(f || "").replace(/"/g, '""')}"`).join(","),
       ),
     ].join("\n");
 
@@ -151,8 +163,8 @@ const totalNewAmount = useMemo(() => {
   };
 
   const handlePrint = useCallback(() => {
-  window.print();
-}, []);
+    window.print();
+  }, []);
 
   if (isLoading)
     return (
@@ -183,10 +195,21 @@ const totalNewAmount = useMemo(() => {
   };
 
   return (
-    <div style={{ padding: "10px" }}>
+    <motion.div
+      style={{ padding: "10px" }}
+      initial={{ x: -100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
       {/* ✅ Action Buttons */}
-      <div className="no-print" style={{ textAlign: "right", margin: "10px 20px" }}>
-        <button
+      <motion.div
+        className="no-print"
+        style={{ textAlign: "right", margin: "10px 20px" }}
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.button
           onClick={exportToCSV}
           style={{
             backgroundColor: "#d9534f",
@@ -197,10 +220,32 @@ const totalNewAmount = useMemo(() => {
             cursor: "pointer",
             marginRight: "10px",
           }}
+          initial={{
+            opacity: 0,
+            scale: 0.8,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          whileHover={{
+            scale: 1.08,
+          }}
+          whileTap={{
+            scale: 0.95,
+          }}
         >
           Download CSV
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           onClick={handlePrint}
           style={{
             backgroundColor: "#0275d8",
@@ -210,10 +255,32 @@ const totalNewAmount = useMemo(() => {
             borderRadius: "5px",
             cursor: "pointer",
           }}
+          initial={{
+            opacity: 0,
+            scale: 0.8,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          whileHover={{
+            scale: 1.08,
+          }}
+          whileTap={{
+            scale: 0.95,
+          }}
         >
           Print Page
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
       {/* ✅ Add New Moi */}
       {/*<article className="no-print" style={{ marginBottom: "20px" }}>
@@ -236,8 +303,33 @@ const totalNewAmount = useMemo(() => {
       </article>*/}
 
       {/* ✅ Table */}
-      <div style={{ overflowX: "auto" }}>
-        <table width="100%" border="1" style={{ borderCollapse: "collapse" }}>
+      <motion.div
+        style={{ overflowX: "auto" }}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{
+          type: "spring",
+          stiffness: 120,
+          damping: 8,
+        }}
+      >
+        <motion.table
+          width="100%"
+          border="1"
+          style={{ borderCollapse: "collapse" }}
+          initial={{
+            y: -40,
+            opacity: 0,
+          }}
+          animate={{
+            y: 0,
+            opacity: 1,
+          }}
+          transition={{
+            duration: 0.6,
+            delay: 0.2,
+          }}
+        >
           <thead>
             <tr style={{ backgroundColor: "#0275d8" }}>
               <th style={thStyle}>ஊர்</th>
@@ -250,28 +342,51 @@ const totalNewAmount = useMemo(() => {
               <th className="no-print" style={thStyle}></th>
             </tr>
           </thead>
-          <tbody>
+          <motion.tbody
+            initial={{
+              y: -40,
+              opacity: 0,
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+            }}
+            transition={{
+              duration: 0.6,
+              delay: 0.2,
+            }}
+          >
             <Suspense fallback={<div>Loading rows...</div>}>
-  {sortedProducts.map((item, index) => (
-    <MoiRow
-      key={item.id}
-      item={item}
-      index={index}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
-      rowRef={
-        index === sortedProducts.length - 1
-          ? lastRowRef
-          : null
-      }
-    />
-  ))}
-</Suspense>
-            <tr
+              {sortedProducts.map((item, index) => (
+                <MoiRow
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  handleEdit={handleEdit}
+                  handleDelete={handleDelete}
+                  rowRef={
+                    index === sortedProducts.length - 1 ? lastRowRef : null
+                  }
+                />
+              ))}
+            </Suspense>
+            <motion.tr
               style={{
                 backgroundColor: "#d1ecf1",
                 fontWeight: "bold",
                 textAlign: "center",
+              }}
+              initial={{
+                y: -40,
+                opacity: 0,
+              }}
+              animate={{
+                y: 0,
+                opacity: 1,
+              }}
+              transition={{
+                duration: 0.6,
+                delay: 0.2,
               }}
             >
               <td style={tdTotalStyle}></td>
@@ -282,10 +397,10 @@ const totalNewAmount = useMemo(() => {
               <td style={tdTotalStyle}></td>
               <td className="no-print" style={tdTotalStyle}></td>
               <td className="no-print" style={tdTotalStyle}></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            </motion.tr>
+          </motion.tbody>
+        </motion.table>
+      </motion.div>
 
       {/* ✅ Print Styles */}
       <style>
@@ -324,6 +439,6 @@ const totalNewAmount = useMemo(() => {
         }
       `}
       </style>
-    </div>
+    </motion.div>
   );
 };

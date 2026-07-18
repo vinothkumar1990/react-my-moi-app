@@ -1,71 +1,30 @@
 import React, { useEffect, useState } from "react";
-import data from "../assets/mois.json";
 import { Atom } from "react-loading-indicators";
 import "./Home.css";
-import useData from "./custom-hook/useData"; // ✅ Make sure this path is correct
 import { motion } from "framer-motion";
+import { useContext } from "react";
+import { MoiContext } from "../context/LoanAllProvider";
 
 export const AllGroupLoan = ({ cart, setCart }) => {
-  // Fetch data from Supabase using the custom hook
-  const { products, error, isLoading, setProducts } = useData(
-    "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/loans",
-    {
-      headers: {
-        apikey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        "Content-Type": "application/json",
-      },
-    },
-  );
+  const {
+    navigate,
+    products,
+    error,
+    isLoading,
+    handleDelete,
+    handleEdit,
+    totalNewAmount,
+    totalOldAmount,
+    handlePrint,
+    lastRowRef,
+    thStyle,
+    tdStyle,
+    tdTotalStyle,
+    loanGroup,
+    grouped_name,
+  } = useContext(MoiContext);
 
-  const [loading, setLoading] = useState(true);
-  const [mois, setMois] = useState([]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMois(data);
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Combine Supabase products or fallback to local mois data
-  const activeData = products && products.length > 0 ? products : mois;
-
-  // Group by `name`
-  const grouped = activeData.reduce((acc, curr) => {
-    if (!acc[curr.name]) acc[curr.name] = [];
-    acc[curr.name].push(curr);
-    return acc;
-  }, {});
-
-  const thStyle = {
-    padding: "10px",
-    borderBottom: "1px solid #ccc",
-    textAlign: "center",
-  };
-
-  const tdStyle = {
-    padding: "10px",
-    borderBottom: "1px solid #eee",
-    textAlign: "center",
-  };
-
-  const tdTotalStyle = {
-    padding: "10px",
-    borderBottom: "1px solid #eee",
-    textAlign: "center",
-    color: "#39740c",
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  if (isLoading || loading) {
+  if (isLoading) {
     return (
       <div style={{ textAlign: "center", marginTop: "50px" }}>
         <center>
@@ -139,7 +98,7 @@ export const AllGroupLoan = ({ cart, setCart }) => {
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        {Object.entries(grouped).map(([name, items]) => (
+        {Object.entries(grouped_name).map(([name, items]) => (
           <motion.div
             key={name}
             style={{
@@ -177,7 +136,7 @@ export const AllGroupLoan = ({ cart, setCart }) => {
                 }}
               >
                 <thead>
-                  <tr style={{ backgroundColor: "#f1f1f1" }}>
+                  <tr style={{ backgroundColor: "rgb(243, 125, 125)" }}>
                     <th style={thStyle}>ஊர்</th>
                     <th style={thStyle}>பழைய பணம்</th>
                     <th style={thStyle}>புதிய பணம்</th>
@@ -247,45 +206,6 @@ export const AllGroupLoan = ({ cart, setCart }) => {
           </motion.div>
         ))}
       </motion.div>
-
-      {/* PRINT STYLES */}
-      <style>
-        {`
-        @media print {
-          @page {
-            size: landscape;
-            margin: 10mm;
-          }
-
-          body {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            background: white;
-          }
-
-          /* Hide elements not needed in print */
-          .slides-section, .no-print, .navbar, .footer {
-            display: none !important;
-          }
-
-          table {
-            width: 100% !important;
-            min-width: 100% !important;
-            font-size: 12px !important;
-          }
-
-          th, td {
-            border: 1px solid #000 !important;
-            padding: 8px !important;
-            text-align: center !important;
-          }
-
-          div {
-            overflow: visible !important;
-          }
-        }
-      `}
-      </style>
     </motion.div>
   );
 };

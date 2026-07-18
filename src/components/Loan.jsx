@@ -1,92 +1,28 @@
 import React, { useEffect, useRef } from "react";
-import useData from "./custom-hook/useData";
 import { useNavigate } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "./Home.css";
 import { motion } from "framer-motion";
-
+import { useContext } from "react";
+import { MoiContext } from "../context/LoanAllProvider";
 export const Loan = () => {
-  const navigate = useNavigate();
-  const { products, error, isLoading, setProducts } = useData(
-    "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/loans",
-    {
-      headers: {
-        apikey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        "Content-Type": "application/json",
-      },
-    },
-  );
-
-  const lastRowRef = useRef(null);
-
-  // ✅ Scroll to last row when a new record is added
-  useEffect(() => {
-    if (lastRowRef.current) {
-      lastRowRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [products.length]);
-
-  // ✅ Delete Function
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(
-            `https://maywdxirobbziiuhjttx.supabase.co/rest/v1/loans?id=eq.${id}`,
-            {
-              headers: {
-                apikey:
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-                Authorization:
-                  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-                "Content-Type": "application/json",
-              },
-            },
-          )
-          .then(() => {
-            const newProductList = products.filter((p) => p.id !== id);
-            setProducts(newProductList);
-            Swal.fire("Deleted!", "Your record has been deleted.", "success");
-          })
-          .catch((error) => {
-            console.error("Delete error:", error);
-            Swal.fire(
-              "Error!",
-              "Something went wrong while deleting.",
-              "error",
-            );
-          });
-      }
-    });
-  };
-
-  // ✅ Edit Function
-  const handleEdit = (id) => {
-    navigate(`/update_loan/${id}`);
-  };
-
-  // ✅ Calculate Totals
-  const totalOldAmount = products.reduce(
-    (sum, item) => sum + Number(item.old_amount || 0),
-    0,
-  );
-  const totalNewAmount = products.reduce(
-    (sum, item) => sum + Number(item.new_amount || 0),
-    0,
-  );
+  const {
+    navigate,
+    products,
+    error,
+    isLoading,
+    handleDelete,
+    handleEdit,
+    totalNewAmount,
+    totalOldAmount,
+    handlePrint,
+    lastRowRef,
+    thStyle,
+    tdStyle,
+    tdTotalStyle,
+  } = useContext(MoiContext);
 
   // ✅ Export to CSV
   const exportToCSV = () => {
@@ -126,9 +62,6 @@ export const Loan = () => {
     document.body.removeChild(link);
   };
 
-  // ✅ Print
-  const handlePrint = () => window.print();
-
   if (isLoading)
     return (
       <div style={{ textAlign: "center", marginTop: "50px" }}>
@@ -142,20 +75,6 @@ export const Loan = () => {
         ⚠️ Error: {error.message}
       </div>
     );
-
-  const thStyle = {
-    padding: "10px",
-    borderBottom: "1px solid #ccc",
-    textAlign: "center",
-    color: "white",
-  };
-  const tdStyle = { padding: "10px", borderBottom: "1px solid #eee" };
-  const tdTotalStyle = {
-    padding: "10px",
-    borderBottom: "1px solid #eee",
-    textAlign: "center",
-    color: "#39740c",
-  };
 
   return (
     <motion.div

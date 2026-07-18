@@ -117,7 +117,7 @@ const pendingColors = pendingLabels.map(label =>
         </div>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h3 style={{ textAlign: 'center', color: 'rgb(10, 68, 25)' }}>
-            திருமண விழா - புதிய பணம் (Pending Status Only)
+            திருமண விழா - புதிய பணம் (Pending Status Only)..
           </h3>
           <Doughnut data={chartDataPending} options={chartOptions} />
         </div>

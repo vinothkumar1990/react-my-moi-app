@@ -14,7 +14,14 @@ import useData from "./custom-hook/useData"; // ✅ Ensure your hook path is cor
 import data from "../assets/mois.json";
 import "./Home.css";
 
-ChartJS.register(BarElement, ArcElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(
+  BarElement,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+);
 
 export const ChartRelo = () => {
   const { products, error, isLoading } = useData(
@@ -27,7 +34,7 @@ export const ChartRelo = () => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const [mois, setMois] = useState([]);
@@ -84,7 +91,7 @@ export const ChartRelo = () => {
         label: "Total New Amount by Function",
         data: Object.values(groupedByFunction),
         backgroundColor: Object.keys(groupedByFunction).map(
-          (label) => colorMap[label] || colorMap["Others"]
+          (label) => colorMap[label] || colorMap["Others"],
         ),
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
@@ -95,7 +102,7 @@ export const ChartRelo = () => {
   // ✅ Doughnut Chart (Pending)
   const pendingLabels = Object.keys(groupedByPendingFunction);
   const pendingColors = pendingLabels.map(
-    (label) => colorMap[label] || colorMap["Others"]
+    (label) => colorMap[label] || colorMap["Others"],
   );
 
   const chartDataPending = {
@@ -146,7 +153,7 @@ export const ChartRelo = () => {
 
       <div style={{ maxWidth: "800px", margin: "40px auto" }}>
         <h3 style={{ textAlign: "center", color: "rgb(10, 68, 25)" }}>
-          திருமண விழா - புதிய பணம் (Pending Status Only)
+          திருமண விழா - புதிய பணம் (Pending Status Only)-----
         </h3>
         <Doughnut data={chartDataPending} options={chartOptions} />
       </div>

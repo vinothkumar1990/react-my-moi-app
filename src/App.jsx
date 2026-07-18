@@ -11,18 +11,9 @@ import { Cart } from "./components/Cart";
 import { Moi } from "./components/Moi";
 import { MoiFilter } from "./components/MoiFilter";
 import { Pending } from "./components/Pending";
-import { Completed } from "./components/Completed";
-import { Large } from "./components/Large";
-import { VinothMoi } from "./components/VinothMoi";
-import { VigneshMoi } from "./components/VigneshMoi";
-import { VijayMoi } from "./components/VijayMoi";
 import { AllMoiList } from "./components/AllMoiList";
 import { PendingGroup } from "./components/PendingGroup";
-import { CompletedGroup } from "./components/CompletedGroup";
-import { NewMoi } from "./components/NewMoi";
 import { Chart } from "./components/Chart";
-import { User } from "./components/User";
-import { UpdateMoi } from "./components/UpdateMoi";
 import { KovilOutgoing } from "./components/KovilOutgoing";
 import { NewIncome } from "./components/NewIncome";
 import { NewOutgoing } from "./components/NewOutgoing";
@@ -31,13 +22,9 @@ import { UpdateOutgoing } from "./components/UpdateOutgoing";
 import { KovilSummary } from "./components/KovilSummary";
 import { IncomeGroup } from "./components/IncomeGroup";
 import { OutgoingGroup } from "./components/OutgoingGroup";
-import { Sample } from "./components/Sample";
-import { NewSample } from "./components/NewSample";
-import { UpdateSample } from "./components/UpdateSample";
 import { Relo } from "./components/Relo";
 import { UpdateRelo } from "./components/UpdateRelo";
 import Login from "./components/Login";
-import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import { isAuthenticated, getUserRole } from "./utils/auth";
@@ -64,6 +51,7 @@ import { MoiAllProvider } from "./context/MoiAllProvider";
 import { MoiProvider } from "./context/MoiProvider";
 import { GroupTable } from "./components/GroupTable";
 import { MoiAllGroupProvider } from "./context/MoiAllGroupProvider";
+import { LoanAllProvider } from "./context/LoanAllProvider";
 function App() {
   const [cart, setCart] = useState([]);
 
@@ -103,7 +91,6 @@ function App() {
             path="/login"
             element={!isAuthenticated() ? <Login /> : <Navigate to="/" />}
           />
-          <Route path="/register" element={<Register />} />
 
           {/* Protected routes */}
           <Route
@@ -152,51 +139,6 @@ function App() {
           />
 
           <Route
-            path="/completed_list"
-            element={
-              <PrivateRoute>
-                <Completed />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/large_amount_list"
-            element={
-              <PrivateRoute>
-                <Large />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/vinoth_mois"
-            element={
-              <PrivateRoute>
-                <VinothMoi />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/vignesh_mois"
-            element={
-              <PrivateRoute>
-                <VigneshMoi />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/vijay_mois"
-            element={
-              <PrivateRoute>
-                <VijayMoi />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
             path="/all_mois"
             element={
               <PrivateRoute>
@@ -213,14 +155,6 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route
-            path="/completed_name_group"
-            element={
-              <PrivateRoute>
-                <CompletedGroup />
-              </PrivateRoute>
-            }
-          />
 
           <Route
             path="/dash_board"
@@ -232,37 +166,10 @@ function App() {
           />
 
           <Route
-            path="/newMoi"
-            element={
-              <PrivateRoute>
-                <NewMoi />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
             path="/charts"
             element={
               <PrivateRoute>
                 <Chart />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/users"
-            element={
-              <PrivateRoute>
-                <User />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/update_moi/:id"
-            element={
-              <PrivateRoute>
-                <UpdateMoi />
               </PrivateRoute>
             }
           />
@@ -541,7 +448,9 @@ function App() {
             path="/loans"
             element={
               <PrivateRoute>
-                <Loan />
+                <LoanAllProvider>
+                  <Loan />
+                </LoanAllProvider>
               </PrivateRoute>
             }
           />
@@ -568,7 +477,9 @@ function App() {
             path="/name_group/loans"
             element={
               <PrivateRoute>
-                <AllGroupLoan />
+                <LoanAllProvider>
+                  <AllGroupLoan />
+                </LoanAllProvider>
               </PrivateRoute>
             }
           />
@@ -577,17 +488,12 @@ function App() {
             path="/place_group/loans"
             element={
               <PrivateRoute>
-                <PlaceGroupLoan />
+                <LoanAllProvider>
+                  <PlaceGroupLoan />
+                </LoanAllProvider>
               </PrivateRoute>
             }
           />
-
-          {/* Sample Pages */}
-
-          <Route path="/sample" element={<Sample />} />
-          <Route path="/addnew" element={<NewSample />} />
-          <Route path="/update_sample/:id" element={<UpdateSample />} />
-          {/* Catch-all route */}
           <Route
             path="*"
             element={<Navigate to={isAuthenticated() ? "/" : "/login"} />}

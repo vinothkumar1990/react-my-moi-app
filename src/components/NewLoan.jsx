@@ -61,7 +61,7 @@ export const NewLoan = () => {
               apikey: API_KEY,
               Authorization: `Bearer ${API_KEY}`,
             },
-          }
+          },
         );
 
         const data = await response.json();
@@ -109,16 +109,17 @@ export const NewLoan = () => {
     if (!newProduct.place.trim()) tempErrors.place = "Place is required";
 
     if (!newProduct.old_amount) tempErrors.old_amount = "Required";
-    else if (isNaN(newProduct.old_amount)) tempErrors.old_amount = "Must be number";
+    else if (isNaN(newProduct.old_amount))
+      tempErrors.old_amount = "Must be number";
 
     if (!newProduct.new_amount) tempErrors.new_amount = "Required";
-    else if (isNaN(newProduct.new_amount)) tempErrors.new_amount = "Must be number";
+    else if (isNaN(newProduct.new_amount))
+      tempErrors.new_amount = "Must be number";
 
     if (!newProduct.given_amount_status.trim())
       tempErrors.given_amount_status = "Required";
 
-    if (!newProduct.function_name.trim())
-      tempErrors.function_name = "Required";
+    if (!newProduct.function_name.trim()) tempErrors.function_name = "Required";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -176,130 +177,185 @@ export const NewLoan = () => {
   };
 
   return (
-    <Paper elevation={20} style={paperStyle}>
-      <Typography variant="h5" textAlign="center" gutterBottom style={{ color: "blue" }}>
-        புதிய மொய்
-      </Typography>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(135deg, #b1ece4, #d5f5f1, #ffffff)",
+        backgroundSize: "400% 400%",
+        animation: "gradient 10s ease infinite",
+        p: 2,
 
-      <Grid component="form" onSubmit={handleAdd} style={{ display: "grid", gap: "20px" }}>
+        "@keyframes gradient": {
+          "0%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+          },
+          "100%": {
+            backgroundPosition: "0% 50%",
+          },
+        },
+      }}
+    >
+      <Paper
+        component={motion.div}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        elevation={12}
+        sx={{
+          maxWidth: 500,
+          width: "95%",
+          margin: "20px auto",
+          p: 3,
+          borderRadius: 5,
+          backgroundColor: "#f5ddeb",
+          boxShadow: "0 15px 40px rgba(0,0,0,0.2)",
+        }}
+      >
+        <Typography
+          variant="h5"
+          textAlign="center"
+          gutterBottom
+          style={{ color: "blue" }}
+        >
+          புதிய மொய்
+        </Typography>
 
-        {/* 🔍 Auto-complete name field */}
-        <div style={{ position: "relative" }}>
+        <Grid
+          component="form"
+          onSubmit={handleAdd}
+          style={{ display: "grid", gap: "20px" }}
+        >
+          {/* 🔍 Auto-complete name field */}
+          <div style={{ position: "relative" }}>
+            <TextField
+              name="name"
+              value={newProduct.name}
+              label="பெயர்"
+              variant="outlined"
+              fullWidth
+              required
+              onChange={handleNameChange}
+              error={!!errors.name}
+              helperText={errors.name}
+            />
+
+            {/* Suggestions box */}
+            {suggestions.length > 0 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "68px",
+                  width: "100%",
+                  background: "#fff",
+                  border: "1px solid #ddd",
+                  borderRadius: "4px",
+                  zIndex: 1000,
+                  maxHeight: "180px",
+                  overflowY: "auto",
+                }}
+              >
+                {suggestions.map((item, index) => (
+                  <div
+                    key={index}
+                    onClick={() => selectSuggestion(item)}
+                    style={{
+                      padding: "10px",
+                      cursor: "pointer",
+                      borderBottom: "1px solid #eee",
+                    }}
+                  >
+                    {item.name} —{" "}
+                    <span style={{ color: "green" }}>{item.place}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <TextField
-            name="name"
-            value={newProduct.name}
-            label="பெயர்"
+            name="place"
+            value={newProduct.place}
+            label="ஊர்"
             variant="outlined"
             fullWidth
             required
-            onChange={handleNameChange}
-            error={!!errors.name}
-            helperText={errors.name}
+            onChange={handleChange}
+            error={!!errors.place}
+            helperText={errors.place}
           />
 
-          {/* Suggestions box */}
-          {suggestions.length > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                top: "68px",
-                width: "100%",
-                background: "#fff",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                zIndex: 1000,
-                maxHeight: "180px",
-                overflowY: "auto",
-              }}
-            >
-              {suggestions.map((item, index) => (
-                <div
-                  key={index}
-                  onClick={() => selectSuggestion(item)}
-                  style={{
-                    padding: "10px",
-                    cursor: "pointer",
-                    borderBottom: "1px solid #eee",
-                  }}
-                >
-                  {item.name} — <span style={{ color: "green" }}>{item.place}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          <TextField
+            name="old_amount"
+            value={newProduct.old_amount}
+            label="பழைய பணம்"
+            variant="outlined"
+            fullWidth
+            type="number"
+            onChange={handleChange}
+            error={!!errors.old_amount}
+            helperText={errors.old_amount}
+          />
 
-        <TextField
-          name="place"
-          value={newProduct.place}
-          label="ஊர்"
-          variant="outlined"
-          fullWidth
-          required
-          onChange={handleChange}
-          error={!!errors.place}
-          helperText={errors.place}
-        />
+          <TextField
+            name="new_amount"
+            value={newProduct.new_amount}
+            label="புதிய பணம்"
+            variant="outlined"
+            fullWidth
+            type="number"
+            onChange={handleChange}
+            error={!!errors.new_amount}
+            helperText={errors.new_amount}
+          />
 
-        <TextField
-          name="old_amount"
-          value={newProduct.old_amount}
-          label="பழைய பணம்"
-          variant="outlined"
-          fullWidth
-          type="number"
-          onChange={handleChange}
-          error={!!errors.old_amount}
-          helperText={errors.old_amount}
-        />
+          {/* தடவை */}
+          <TextField
+            select
+            name="given_amount_status"
+            value={newProduct.given_amount_status}
+            label="தடவை"
+            variant="outlined"
+            fullWidth
+            onChange={handleChange}
+            error={!!errors.given_amount_status}
+            helperText={errors.given_amount_status}
+          >
+            <MenuItem value="">-- Select --</MenuItem>
+            <MenuItem value="0">0</MenuItem>
+            <MenuItem value="I">I</MenuItem>
+            <MenuItem value="II">II</MenuItem>
+            <MenuItem value="III">III</MenuItem>
+            <MenuItem value="IV">IV</MenuItem>
+          </TextField>
 
-        <TextField
-          name="new_amount"
-          value={newProduct.new_amount}
-          label="புதிய பணம்"
-          variant="outlined"
-          fullWidth
-          type="number"
-          onChange={handleChange}
-          error={!!errors.new_amount}
-          helperText={errors.new_amount}
-        />
+          <TextField
+            name="function_name"
+            value={newProduct.function_name}
+            label="விழா"
+            variant="outlined"
+            fullWidth
+            onChange={handleChange}
+            error={!!errors.function_name}
+            helperText={errors.function_name}
+          />
 
-        {/* தடவை */}
-        <TextField
-          select
-          name="given_amount_status"
-          value={newProduct.given_amount_status}
-          label="தடவை"
-          variant="outlined"
-          fullWidth
-          onChange={handleChange}
-          error={!!errors.given_amount_status}
-          helperText={errors.given_amount_status}
-        >
-          <MenuItem value="">-- Select --</MenuItem>
-          <MenuItem value="0">0</MenuItem>
-          <MenuItem value="I">I</MenuItem>
-          <MenuItem value="II">II</MenuItem>
-          <MenuItem value="III">III</MenuItem>
-          <MenuItem value="IV">IV</MenuItem>
-        </TextField>
-
-        <TextField
-          name="function_name"
-          value={newProduct.function_name}
-          label="விழா"
-          variant="outlined"
-          fullWidth
-          onChange={handleChange}
-          error={!!errors.function_name}
-          helperText={errors.function_name}
-        />
-
-        <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "Add"}
-        </Button>
-      </Grid>
-    </Paper>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : "Add"}
+          </Button>
+        </Grid>
+      </Paper>
+    </Box>
   );
 };

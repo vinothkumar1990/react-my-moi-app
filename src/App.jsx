@@ -1,75 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import { Header } from './components/Header';
-import { Footer } from './components/Footer';
-import { Home } from './components/Home';
-import { KovilIncome } from './components/KovilIncome';
-import { Cart } from './components/Cart';
-import { Moi } from './components/Moi';
-import { MoiFilter } from './components/MoiFilter';
-import { Pending } from './components/Pending';
-import { Completed } from './components/Completed';
-import { Large } from './components/Large';
-import { VinothMoi } from './components/VinothMoi';
-import { VigneshMoi } from './components/VigneshMoi';
-import { VijayMoi } from './components/VijayMoi';
-import { AllMoiList } from './components/AllMoiList';
-import { PendingGroup } from './components/PendingGroup';
-import { CompletedGroup } from './components/CompletedGroup';
-import { NewMoi } from './components/NewMoi';
-import { Chart } from './components/Chart';
-import { User } from './components/User';
-import { UpdateMoi } from './components/UpdateMoi';
-import { KovilOutgoing } from './components/KovilOutgoing';
-import { NewIncome } from './components/NewIncome';
-import { NewOutgoing } from './components/NewOutgoing';
-import { UpdateIncome } from './components/UpdateIncome';
-import { UpdateOutgoing } from './components/UpdateOutgoing';
-import { KovilSummary } from './components/KovilSummary';
-import { IncomeGroup } from './components/IncomeGroup';
-import { OutgoingGroup } from './components/OutgoingGroup';
-import { Sample } from './components/Sample';
-import { NewSample } from './components/NewSample';
-import { UpdateSample } from './components/UpdateSample';
-import { Relo } from './components/Relo';
-import { UpdateRelo } from './components/UpdateRelo';
-import Login from './components/Login';
-import Register from './components/Register';
-import Dashboard from './components/Dashboard';
-import PrivateRoute from './components/PrivateRoute';
-import { isAuthenticated, getUserRole } from './utils/auth';
-import { NewRelo } from './components/NewRelo';
-import { VinothRelo } from './components/VinothRelo';
-import { VigneshRelo } from './components/VigneshRelo';
-import { VijayRelo } from './components/VijayRelo';
-import { PendingGroupRelo } from './components/PendingGroupRelo';
-import { CompleteGroupRelo } from './components/CompleteGroupRelo';
-import { ChartRelo } from './components/ChartRelo';
-import { PendingListRelo } from './components/PendingListRelo';
-import { CompleteListRelo } from './components/CompleteListRelo';
-import { MoiSearchRelo } from './components/MoiSearchRelo';
-import { AllGroupRelo } from './components/AllGroupRelo';
-import { Loan } from './components/Loan';
-import { NewLoan } from './components/NewLoan';
-import { UpdateLoan } from './components/UpdateLoan';
-import { AllGroupLoan } from './components/AllGroupLoan';
-import { PlaceGroupLoan } from './components/PlaceGroupLoan';
-import { KovilBalance } from './components/KovilBalance';
-import { NewBalance } from './components/NewBalance';
-import { UpdateBalance } from './components/UpdateBalance';
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
+import { Home } from "./components/Home";
+import { KovilIncome } from "./components/KovilIncome";
+import { Cart } from "./components/Cart";
+import { Moi } from "./components/Moi";
+import { MoiFilter } from "./components/MoiFilter";
+import { Pending } from "./components/Pending";
+import { Completed } from "./components/Completed";
+import { Large } from "./components/Large";
+import { VinothMoi } from "./components/VinothMoi";
+import { VigneshMoi } from "./components/VigneshMoi";
+import { VijayMoi } from "./components/VijayMoi";
+import { AllMoiList } from "./components/AllMoiList";
+import { PendingGroup } from "./components/PendingGroup";
+import { CompletedGroup } from "./components/CompletedGroup";
+import { NewMoi } from "./components/NewMoi";
+import { Chart } from "./components/Chart";
+import { User } from "./components/User";
+import { UpdateMoi } from "./components/UpdateMoi";
+import { KovilOutgoing } from "./components/KovilOutgoing";
+import { NewIncome } from "./components/NewIncome";
+import { NewOutgoing } from "./components/NewOutgoing";
+import { UpdateIncome } from "./components/UpdateIncome";
+import { UpdateOutgoing } from "./components/UpdateOutgoing";
+import { KovilSummary } from "./components/KovilSummary";
+import { IncomeGroup } from "./components/IncomeGroup";
+import { OutgoingGroup } from "./components/OutgoingGroup";
+import { Sample } from "./components/Sample";
+import { NewSample } from "./components/NewSample";
+import { UpdateSample } from "./components/UpdateSample";
+import { Relo } from "./components/Relo";
+import { UpdateRelo } from "./components/UpdateRelo";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Dashboard from "./components/Dashboard";
+import PrivateRoute from "./components/PrivateRoute";
+import { isAuthenticated, getUserRole } from "./utils/auth";
+import { NewRelo } from "./components/NewRelo";
+import { VinothRelo } from "./components/VinothRelo";
+import { VigneshRelo } from "./components/VigneshRelo";
+import { VijayRelo } from "./components/VijayRelo";
+import { PendingGroupRelo } from "./components/PendingGroupRelo";
+import { CompleteGroupRelo } from "./components/CompleteGroupRelo";
+import { ChartRelo } from "./components/ChartRelo";
+import { PendingListRelo } from "./components/PendingListRelo";
+import { CompleteListRelo } from "./components/CompleteListRelo";
+import { MoiSearchRelo } from "./components/MoiSearchRelo";
+import { AllGroupRelo } from "./components/AllGroupRelo";
+import { Loan } from "./components/Loan";
+import { NewLoan } from "./components/NewLoan";
+import { UpdateLoan } from "./components/UpdateLoan";
+import { AllGroupLoan } from "./components/AllGroupLoan";
+import { PlaceGroupLoan } from "./components/PlaceGroupLoan";
+import { KovilBalance } from "./components/KovilBalance";
+import { NewBalance } from "./components/NewBalance";
+import { UpdateBalance } from "./components/UpdateBalance";
+import { MoiAllProvider } from "./context/MoiAllProvider";
+import { MoiProvider } from "./context/MoiProvider";
+import { GroupTable } from "./components/GroupTable";
+import { MoiAllGroupProvider } from "./context/MoiAllGroupProvider";
 function App() {
   const [cart, setCart] = useState([]);
 
   // Initialize default users (only once)
   useEffect(() => {
-    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
     const defaultUsers = [
-      { email: 'admin@gmail.com', password: 'admin123', role: 'admin' },
-      { email: 'customer@gmail.com', password: 'cust123', role: 'customer' },
+      { email: "admin@gmail.com", password: "admin123", role: "admin" },
+      { email: "customer@gmail.com", password: "cust123", role: "customer" },
     ];
 
     defaultUsers.forEach((user) => {
@@ -78,14 +82,14 @@ function App() {
       }
     });
 
-    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem("users", JSON.stringify(users));
   }, []);
 
   // Redirect based on role
   const HomeRedirect = () => {
     const role = getUserRole();
     if (!role) return <Navigate to="/login" />;
-    return role === 'admin' ? <Home /> : <KovilIncome />;
+    return role === "admin" ? <Home /> : <KovilIncome />;
   };
 
   return (
@@ -272,32 +276,31 @@ function App() {
             }
           />
           <Route
-  path="/kovil/balances"
-  element={
-    <PrivateRoute>
-      <KovilBalance />
-    </PrivateRoute>
-  }
-/>
+            path="/kovil/balances"
+            element={
+              <PrivateRoute>
+                <KovilBalance />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/new/balance"
-  element={
-    <PrivateRoute>
-      <NewBalance />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/new/balance"
+            element={
+              <PrivateRoute>
+                <NewBalance />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/update_balance/:id"
-  element={
-    <PrivateRoute>
-      <UpdateBalance />
-    </PrivateRoute>
-  }
-/>
-
+          <Route
+            path="/update_balance/:id"
+            element={
+              <PrivateRoute>
+                <UpdateBalance />
+              </PrivateRoute>
+            }
+          />
 
           <Route
             path="/kovil/outgoing_list"
@@ -371,176 +374,223 @@ function App() {
             }
           />
           <Route
-  path="/all"
-  element={
-    <PrivateRoute>
-      <Relo />
-    </PrivateRoute>
-  }
-/>
+            path="/all"
+            element={
+              <PrivateRoute>
+                <MoiAllProvider>
+                  <Relo />
+                </MoiAllProvider>
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/update_relo/:id"
-  element={
-    <PrivateRoute>
-      <UpdateRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/update_relo/:id"
+            element={
+              <PrivateRoute>
+                <UpdateRelo />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/new/moi"
-  element={
-    <PrivateRoute>
-      <NewRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/new/moi"
+            element={
+              <PrivateRoute>
+                <NewRelo />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/vinoth/mois"
-  element={
-    <PrivateRoute>
-      <VinothRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/vinoth/mois1"
+            element={
+              <PrivateRoute>
+                <MoiProvider>
+                  <VinothRelo />
+                </MoiProvider>
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/vignesh/mois"
-  element={
-    <PrivateRoute>
-      <VigneshRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/vignesh/mois1"
+            element={
+              <PrivateRoute>
+                <MoiProvider>
+                  <VigneshRelo />
+                </MoiProvider>
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/vijay/mois"
-  element={
-    <PrivateRoute>
-      <VijayRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/vijay/mois1"
+            element={
+              <PrivateRoute>
+                <MoiProvider>
+                  <VijayRelo />
+                </MoiProvider>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vinoth/mois"
+            element={
+              <PrivateRoute>
+                <MoiProvider>
+                  <GroupTable />
+                </MoiProvider>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/Vignesh/mois"
+            element={
+              <PrivateRoute>
+                <MoiProvider>
+                  <GroupTable />
+                </MoiProvider>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vijay/mois"
+            element={
+              <PrivateRoute>
+                <MoiProvider>
+                  <GroupTable />
+                </MoiProvider>
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/pending/name_group"
-  element={
-    <PrivateRoute>
-      <PendingGroupRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/pending/name_group"
+            element={
+              <PrivateRoute>
+                <MoiAllGroupProvider>
+                  <PendingGroupRelo />
+                </MoiAllGroupProvider>
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/complete/name_group"
-  element={
-    <PrivateRoute>
-      <CompleteGroupRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/complete/name_group"
+            element={
+              <PrivateRoute>
+                <MoiAllGroupProvider>
+                  <CompleteGroupRelo />
+                </MoiAllGroupProvider>
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/mois_charts"
-  element={
-    <PrivateRoute>
-      <ChartRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/mois_charts"
+            element={
+              <PrivateRoute>
+                <ChartRelo />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/pending/lists"
-  element={
-    <PrivateRoute>
-      <PendingListRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/pending/lists"
+            element={
+              <PrivateRoute>
+                <MoiAllGroupProvider>
+                  <PendingListRelo />
+                </MoiAllGroupProvider>
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/completed/lists"
-  element={
-    <PrivateRoute>
-      <CompleteListRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/completed/lists"
+            element={
+              <PrivateRoute>
+                <MoiAllGroupProvider>
+                  <CompleteListRelo />
+                </MoiAllGroupProvider>
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/mois_search"
-  element={
-    <PrivateRoute>
-      <MoiSearchRelo />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/mois_search"
+            element={
+              <PrivateRoute>
+                <MoiSearchRelo />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/all_name_group"
-  element={
-    <PrivateRoute>
-      <AllGroupRelo />
-    </PrivateRoute>
-  }
-/>
-<Route
-  path="/loans"
-  element={
-    <PrivateRoute>
-      <Loan />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/all_name_group"
+            element={
+              <PrivateRoute>
+                <MoiAllGroupProvider>
+                  <AllGroupRelo />
+                </MoiAllGroupProvider>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/loans"
+            element={
+              <PrivateRoute>
+                <Loan />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/new/loan"
-  element={
-    <PrivateRoute>
-      <NewLoan />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/new/loan"
+            element={
+              <PrivateRoute>
+                <NewLoan />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/update_loan/:id"
-  element={
-    <PrivateRoute>
-      <UpdateLoan />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/update_loan/:id"
+            element={
+              <PrivateRoute>
+                <UpdateLoan />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/name_group/loans"
-  element={
-    <PrivateRoute>
-      <AllGroupLoan />
-    </PrivateRoute>
-  }
-/>
+          <Route
+            path="/name_group/loans"
+            element={
+              <PrivateRoute>
+                <AllGroupLoan />
+              </PrivateRoute>
+            }
+          />
 
-<Route
-  path="/place_group/loans"
-  element={
-    <PrivateRoute>
-      <PlaceGroupLoan />
-    </PrivateRoute>
-  }
-/>
-
+          <Route
+            path="/place_group/loans"
+            element={
+              <PrivateRoute>
+                <PlaceGroupLoan />
+              </PrivateRoute>
+            }
+          />
 
           {/* Sample Pages */}
-          
+
           <Route path="/sample" element={<Sample />} />
           <Route path="/addnew" element={<NewSample />} />
           <Route path="/update_sample/:id" element={<UpdateSample />} />
           {/* Catch-all route */}
           <Route
             path="*"
-            element={<Navigate to={isAuthenticated() ? '/' : '/login'} />}
+            element={<Navigate to={isAuthenticated() ? "/" : "/login"} />}
           />
         </Routes>
       </div>

@@ -1,7 +1,7 @@
 // src/components/Login.jsx
-import React, { useState } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { loginUser } from '../utils/auth';
+import React, { useState } from "react";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { loginUser } from "../utils/auth";
 import {
   Container,
   Paper,
@@ -11,35 +11,39 @@ import {
   Box,
   Link,
   CircularProgress,
-} from '@mui/material';
-import Swal from 'sweetalert2';
+} from "@mui/material";
+import Swal from "sweetalert2";
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     const success = await loginUser(email, password, navigate);
 
     setLoading(false);
 
     if (success) {
-      Swal.fire('✅ Success', 'Logged in successfully!', 'success');
+      Swal.fire("✅ Success", "Logged in successfully!", "success");
     } else {
-      setError('❌ Invalid email or password');
+      setError("❌ Invalid email or password");
     }
   };
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ p: 4, mt: 10 }}>
+      <Paper
+        elevation={3}
+        sx={{ p: 4, mt: 10 }}
+        style={{ color: "#1976d2", backgroundColor: "#d2ebe7" }}
+      >
         <Typography variant="h5" align="center" gutterBottom>
           Login
         </Typography>
@@ -78,7 +82,7 @@ function Login() {
             sx={{ mt: 2 }}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
           </Button>
         </Box>
 

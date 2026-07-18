@@ -7,9 +7,11 @@ import {
   Button,
   CircularProgress,
   MenuItem,
+  IconButton,
+  Box,
 } from "@mui/material";
 import Swal from "sweetalert2";
-
+import { motion } from "framer-motion";
 export const NewRelo = () => {
   const paperStyle = {
     width: 400,
@@ -94,7 +96,7 @@ export const NewRelo = () => {
     }
 
     const matches = allNames.filter((item) =>
-      item.name.toLowerCase().includes(value.toLowerCase())
+      item.name.toLowerCase().includes(value.toLowerCase()),
     );
 
     setFiltered(matches);
@@ -122,8 +124,7 @@ export const NewRelo = () => {
     if (!newProduct.name.trim()) temp.name = "பெயர் தேவை";
     if (!newProduct.place.trim()) temp.place = "ஊர் தேவை";
 
-    if (!newProduct.function_name.trim())
-      temp.function_name = "விழா தேவை";
+    if (!newProduct.function_name.trim()) temp.function_name = "விழா தேவை";
 
     if (!newProduct.given_amount_status.trim())
       temp.given_amount_status = "தடவை தேவை";
@@ -190,179 +191,222 @@ export const NewRelo = () => {
   //   🔥 UI
   // ---------------------------------------
   return (
-    <Paper elevation={20} style={paperStyle}>
-      <Typography
-        variant="h5"
-        textAlign="center"
-        gutterBottom
-        style={{ color: "blue" }}
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(135deg, #b1ece4, #d5f5f1, #ffffff)",
+        backgroundSize: "400% 400%",
+        animation: "gradient 10s ease infinite",
+        p: 2,
+
+        "@keyframes gradient": {
+          "0%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+          },
+          "100%": {
+            backgroundPosition: "0% 50%",
+          },
+        },
+      }}
+    >
+      <Paper
+        component={motion.div}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        elevation={12}
+        sx={{
+          maxWidth: 500,
+          width: "95%",
+          margin: "20px auto",
+          p: 3,
+          borderRadius: 5,
+          backgroundColor: "#f5ddeb",
+          boxShadow: "0 15px 40px rgba(0,0,0,0.2)",
+        }}
       >
-        புதிய மொய்
-      </Typography>
+        <Typography
+          variant="h5"
+          textAlign="center"
+          gutterBottom
+          style={{ color: "blue" }}
+        >
+          புதிய மொய்
+        </Typography>
 
-      <Grid component="form" style={{ display: "grid", gap: "20px" }} onSubmit={handleAdd}>
+        <Grid
+          component="form"
+          style={{ display: "grid", gap: "20px" }}
+          onSubmit={handleAdd}
+        >
+          {/* NAME + AUTO-COMPLETE */}
+          <div style={{ position: "relative" }}>
+            <TextField
+              name="name"
+              value={newProduct.name}
+              label="பெயர்"
+              variant="outlined"
+              fullWidth
+              required
+              onChange={handleNameTyping}
+              error={!!errors.name}
+              helperText={errors.name}
+            />
 
-        {/* NAME + AUTO-COMPLETE */}
-        <div style={{ position: "relative" }}>
+            {showSuggestions && filtered.length > 0 && (
+              <div
+                style={{
+                  position: "absolute",
+                  background: "#fff",
+                  width: "100%",
+                  border: "1px solid #ccc",
+                  zIndex: 10,
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                }}
+              >
+                {filtered.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => selectSuggestion(item)}
+                    style={{
+                      padding: "10px",
+                      cursor: "pointer",
+                      borderBottom: "1px solid #eee",
+                    }}
+                  >
+                    {item.name} — {item.place}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* PLACE */}
           <TextField
-            name="name"
-            value={newProduct.name}
-            label="பெயர்"
+            name="place"
+            value={newProduct.place}
+            label="ஊர்"
             variant="outlined"
             fullWidth
             required
-            onChange={handleNameTyping}
-            error={!!errors.name}
-            helperText={errors.name}
+            onChange={(e) =>
+              setNewProduct((p) => ({ ...p, place: e.target.value }))
+            }
+            error={!!errors.place}
+            helperText={errors.place}
           />
 
-          {showSuggestions && filtered.length > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                background: "#fff",
-                width: "100%",
-                border: "1px solid #ccc",
-                zIndex: 10,
-                maxHeight: "200px",
-                overflowY: "auto",
-              }}
-            >
-              {filtered.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => selectSuggestion(item)}
-                  style={{
-                    padding: "10px",
-                    cursor: "pointer",
-                    borderBottom: "1px solid #eee",
-                  }}
-                >
-                  {item.name} — {item.place}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* PLACE */}
-        <TextField
-          name="place"
-          value={newProduct.place}
-          label="ஊர்"
-          variant="outlined"
-          fullWidth
-          required
-          onChange={(e) =>
-            setNewProduct((p) => ({ ...p, place: e.target.value }))
-          }
-          error={!!errors.place}
-          helperText={errors.place}
-        />
-
-        {/* OLD AMOUNT */}
-        <TextField
-          name="old_amount"
-          value={newProduct.old_amount}
-          label="பழைய பணம்"
-          variant="outlined"
-          fullWidth
-          type="number"
-          required
-          onChange={(e) =>
-            setNewProduct((p) => ({ ...p, old_amount: e.target.value }))
-          }
-          error={!!errors.old_amount}
-          helperText={errors.old_amount}
-        />
-
-        {/* NEW AMOUNT */}
-        <TextField
-          name="new_amount"
-          value={newProduct.new_amount}
-          label="புதிய பணம்"
-          variant="outlined"
-          fullWidth
-          type="number"
-          required
-          onChange={(e) =>
-            setNewProduct((p) => ({ ...p, new_amount: e.target.value }))
-          }
-          error={!!errors.new_amount}
-          helperText={errors.new_amount}
-        />
-
-        {/* GIVEN AMOUNT STATUS */}
-        <TextField
-                  select
-                  name="given_amount_status"
-                  value={newProduct.given_amount_status}
-                  label="தடவை"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  onChange={(e) =>
-                    setNewProduct((prev) => ({
-                      ...prev,
-                      given_amount_status: e.target.value,
-                    }))
-                  }
-                  error={!!errors.given_amount_status}
-                  helperText={errors.given_amount_status}
-                >
-                  <MenuItem value="">-- தடவை தேர்ந்தெடுக்கவும் --</MenuItem>
-                  <MenuItem value="0">0</MenuItem>
-                  <MenuItem value="I">I</MenuItem>
-                  <MenuItem value="II">II</MenuItem>
-                  <MenuItem value="III">III</MenuItem>
-                  <MenuItem value="IV">IV</MenuItem>
-                </TextField>
-
-                {/* ✅ விழா Select Dropdown with validation */}
-        <TextField
-          select
-          name="function_name"
-          value={newProduct.function_name}
-          label="விழா"
-          variant="outlined"
-          fullWidth
-          required
-          onChange={(e) =>
-                    setNewProduct((prev) => ({
-                      ...prev,
-                      function_name: e.target.value,
-                    }))
-                  }
-          error={!!errors.function_name}
-          helperText={errors.function_name}
-        >
-          <MenuItem value="">-- விழா தேர்ந்தெடுக்கவும் --</MenuItem>
-          <MenuItem value="வினோத் திருமணம்">வினோத் திருமணம்</MenuItem>
-          <MenuItem value="விக்னேஷ் திருமணம்">விக்னேஷ் திருமணம்</MenuItem>
-          <MenuItem value="விஜய் திருமணம்">விஜய் திருமணம்</MenuItem>
-        </TextField>
+          {/* OLD AMOUNT */}
           <TextField
-                    select
-                    name="status"
-                    value={newProduct.status}
-                    label="மொய் நிலை"
-                    variant="outlined"
-                    fullWidth
-                    disabled
-                  >
-                    <MenuItem value="Pending">நிலுவையில்</MenuItem>
-                    <MenuItem value="Completed">முடிக்கப்பட்டது</MenuItem>
-                  </TextField>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          disabled={loading}
-        >
-          {loading ? <CircularProgress size={24} /> : "Add"}
-        </Button>
-      </Grid>
-    </Paper>
+            name="old_amount"
+            value={newProduct.old_amount}
+            label="பழைய பணம்"
+            variant="outlined"
+            fullWidth
+            type="number"
+            required
+            onChange={(e) =>
+              setNewProduct((p) => ({ ...p, old_amount: e.target.value }))
+            }
+            error={!!errors.old_amount}
+            helperText={errors.old_amount}
+          />
+
+          {/* NEW AMOUNT */}
+          <TextField
+            name="new_amount"
+            value={newProduct.new_amount}
+            label="புதிய பணம்"
+            variant="outlined"
+            fullWidth
+            type="number"
+            required
+            onChange={(e) =>
+              setNewProduct((p) => ({ ...p, new_amount: e.target.value }))
+            }
+            error={!!errors.new_amount}
+            helperText={errors.new_amount}
+          />
+
+          {/* GIVEN AMOUNT STATUS */}
+          <TextField
+            select
+            name="given_amount_status"
+            value={newProduct.given_amount_status}
+            label="தடவை"
+            variant="outlined"
+            fullWidth
+            required
+            onChange={(e) =>
+              setNewProduct((prev) => ({
+                ...prev,
+                given_amount_status: e.target.value,
+              }))
+            }
+            error={!!errors.given_amount_status}
+            helperText={errors.given_amount_status}
+          >
+            <MenuItem value="">-- தடவை தேர்ந்தெடுக்கவும் --</MenuItem>
+            <MenuItem value="0">0</MenuItem>
+            <MenuItem value="I">I</MenuItem>
+            <MenuItem value="II">II</MenuItem>
+            <MenuItem value="III">III</MenuItem>
+            <MenuItem value="IV">IV</MenuItem>
+          </TextField>
+
+          {/* ✅ விழா Select Dropdown with validation */}
+          <TextField
+            select
+            name="function_name"
+            value={newProduct.function_name}
+            label="விழா"
+            variant="outlined"
+            fullWidth
+            required
+            onChange={(e) =>
+              setNewProduct((prev) => ({
+                ...prev,
+                function_name: e.target.value,
+              }))
+            }
+            error={!!errors.function_name}
+            helperText={errors.function_name}
+          >
+            <MenuItem value="">-- விழா தேர்ந்தெடுக்கவும் --</MenuItem>
+            <MenuItem value="வினோத் திருமணம்">வினோத் திருமணம்</MenuItem>
+            <MenuItem value="விக்னேஷ் திருமணம்">விக்னேஷ் திருமணம்</MenuItem>
+            <MenuItem value="விஜய் திருமணம்">விஜய் திருமணம்</MenuItem>
+          </TextField>
+          <TextField
+            select
+            name="status"
+            value={newProduct.status}
+            label="மொய் நிலை"
+            variant="outlined"
+            fullWidth
+            disabled
+          >
+            <MenuItem value="Pending">நிலுவையில்</MenuItem>
+            <MenuItem value="Completed">முடிக்கப்பட்டது</MenuItem>
+          </TextField>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : "Add"}
+          </Button>
+        </Grid>
+      </Paper>
+    </Box>
   );
 };

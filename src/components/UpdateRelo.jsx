@@ -7,11 +7,13 @@ import {
   Button,
   CircularProgress,
   MenuItem,
+  IconButton,
+  Box,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import { motion } from "framer-motion";
 export const UpdateRelo = () => {
   const paperStyle = {
     width: 400,
@@ -131,8 +133,52 @@ export const UpdateRelo = () => {
   }
 
   return (
-    <Paper elevation={20} style={paperStyle}>
-      <Typography variant="h5" textAlign="center" gutterBottom style={{ color: "blue" }}>
+     <Box
+          sx={{
+            minHeight: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "linear-gradient(135deg, #b1ece4, #d5f5f1, #ffffff)",
+            backgroundSize: "400% 400%",
+            animation: "gradient 10s ease infinite",
+            p: 2,
+    
+            "@keyframes gradient": {
+              "0%": {
+                backgroundPosition: "0% 50%",
+              },
+              "50%": {
+                backgroundPosition: "100% 50%",
+              },
+              "100%": {
+                backgroundPosition: "0% 50%",
+              },
+            },
+          }}
+        >
+    <Paper
+            component={motion.div}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            elevation={12}
+            sx={{
+              maxWidth: 500,
+              width: "95%",
+              margin: "20px auto",
+              p: 3,
+              borderRadius: 5,
+              backgroundColor: "#f5ddeb",
+              boxShadow: "0 15px 40px rgba(0,0,0,0.2)",
+            }}
+          >
+      <Typography
+        variant="h5"
+        textAlign="center"
+        gutterBottom
+        style={{ color: "blue" }}
+      >
         மொய்
       </Typography>
 
@@ -259,5 +305,6 @@ export const UpdateRelo = () => {
         </Button>
       </Grid>
     </Paper>
+    </Box>
   );
 };

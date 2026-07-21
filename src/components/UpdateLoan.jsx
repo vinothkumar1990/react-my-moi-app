@@ -7,11 +7,13 @@ import {
   Button,
   CircularProgress,
   MenuItem,
+  IconButton,
+  Box,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import { motion } from "framer-motion";
 export const UpdateLoan = () => {
   const paperStyle = {
     width: 400,
@@ -117,110 +119,155 @@ export const UpdateLoan = () => {
 
   // ✅ Render Form
   return (
-    <Paper elevation={20} style={paperStyle}>
-      <Typography variant="h5" textAlign="center" gutterBottom style={{ color: "blue" }}>
-        மொய்
-      </Typography>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(135deg, #b1ece4, #d5f5f1, #ffffff)",
+        backgroundSize: "400% 400%",
+        animation: "gradient 10s ease infinite",
+        p: 2,
 
-      <Grid
-        component="form"
-        style={{ display: "grid", gap: "20px" }}
-        onSubmit={handleUpdate}
+        "@keyframes gradient": {
+          "0%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+          },
+          "100%": {
+            backgroundPosition: "0% 50%",
+          },
+        },
+      }}
+    >
+      <Paper
+        component={motion.div}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        elevation={12}
+        sx={{
+          maxWidth: 500,
+          width: "95%",
+          margin: "20px auto",
+          p: 3,
+          borderRadius: 5,
+          backgroundColor: "#f5ddeb",
+          boxShadow: "0 15px 40px rgba(0,0,0,0.2)",
+        }}
       >
-        <TextField
-          name="place"
-          value={updateProduct.place || ""}
-          label="ஊர்"
-          variant="outlined"
-          fullWidth
-          onChange={handleChange}
-          required
-        />
-
-        <TextField
-          name="name"
-          value={updateProduct.name || ""}
-          label="பெயர்"
-          variant="outlined"
-          fullWidth
-          onChange={handleChange}
-          required
-        />
-
-        <TextField
-          name="old_amount"
-          value={updateProduct.old_amount || "0"}
-          label="பழைய பணம்"
-          variant="outlined"
-          fullWidth
-          type="number"
-          onChange={handleChange}
-        />
-
-        <TextField
-          name="new_amount"
-          value={updateProduct.new_amount || "0"}
-          label="புதிய பணம்"
-          variant="outlined"
-          fullWidth
-          type="number"
-          onChange={handleChange}
-        />
-
-        {/* தடவை */}
-        <TextField
-          select
-          name="given_amount_status"
-          value={updateProduct.given_amount_status || ""}
-          label="தடவை"
-          variant="outlined"
-          fullWidth
-          required
-          onChange={handleChange}
+        <Typography
+          variant="h5"
+          textAlign="center"
+          gutterBottom
+          style={{ color: "blue" }}
         >
-          <MenuItem value="">-- தடவை தேர்ந்தெடுக்கவும் --</MenuItem>
-          <MenuItem value="0">0</MenuItem>
-          <MenuItem value="I">I</MenuItem>
-          <MenuItem value="II">II</MenuItem>
-          <MenuItem value="III">III</MenuItem>
-          <MenuItem value="IV">IV</MenuItem>
-        </TextField>
+          மொய்
+        </Typography>
 
-        <TextField
-          name="function_name"
-          value={updateProduct.function_name || ""}
-          label="Function Name"
-          variant="outlined"
-          fullWidth
-          onChange={handleChange}
-        />
-
-        {/* மொய் நிலை */}
-        <TextField
-          select
-          name="status"
-          value={updateProduct.status || ""}
-          label="மொய் நிலை"
-          variant="outlined"
-          fullWidth
-          required
-          onChange={handleChange}
+        <Grid
+          component="form"
+          style={{ display: "grid", gap: "20px" }}
+          onSubmit={handleUpdate}
         >
-          <MenuItem value="">-- நிலை தேர்ந்தெடுக்கவும் --</MenuItem>
-          <MenuItem value="Pending">நிலுவையில்</MenuItem>
-          <MenuItem value="Completed">முடிக்கப்பட்டது</MenuItem>
-        </TextField>
+          <TextField
+            name="place"
+            value={updateProduct.place || ""}
+            label="ஊர்"
+            variant="outlined"
+            fullWidth
+            onChange={handleChange}
+            required
+          />
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="success"
-          fullWidth
-          disabled={saving}
-        >
-          {saving ? "Saving..." : "Save"}
-        </Button>
-      </Grid>
-    </Paper>
+          <TextField
+            name="name"
+            value={updateProduct.name || ""}
+            label="பெயர்"
+            variant="outlined"
+            fullWidth
+            onChange={handleChange}
+            required
+          />
+
+          <TextField
+            name="old_amount"
+            value={updateProduct.old_amount || "0"}
+            label="பழைய பணம்"
+            variant="outlined"
+            fullWidth
+            type="number"
+            onChange={handleChange}
+          />
+
+          <TextField
+            name="new_amount"
+            value={updateProduct.new_amount || "0"}
+            label="புதிய பணம்"
+            variant="outlined"
+            fullWidth
+            type="number"
+            onChange={handleChange}
+          />
+
+          {/* தடவை */}
+          <TextField
+            select
+            name="given_amount_status"
+            value={updateProduct.given_amount_status || ""}
+            label="தடவை"
+            variant="outlined"
+            fullWidth
+            required
+            onChange={handleChange}
+          >
+            <MenuItem value="">-- தடவை தேர்ந்தெடுக்கவும் --</MenuItem>
+            <MenuItem value="0">0</MenuItem>
+            <MenuItem value="I">I</MenuItem>
+            <MenuItem value="II">II</MenuItem>
+            <MenuItem value="III">III</MenuItem>
+            <MenuItem value="IV">IV</MenuItem>
+          </TextField>
+
+          <TextField
+            name="function_name"
+            value={updateProduct.function_name || ""}
+            label="Function Name"
+            variant="outlined"
+            fullWidth
+            onChange={handleChange}
+          />
+
+          {/* மொய் நிலை */}
+          <TextField
+            select
+            name="status"
+            value={updateProduct.status || ""}
+            label="மொய் நிலை"
+            variant="outlined"
+            fullWidth
+            required
+            onChange={handleChange}
+          >
+            <MenuItem value="">-- நிலை தேர்ந்தெடுக்கவும் --</MenuItem>
+            <MenuItem value="Pending">நிலுவையில்</MenuItem>
+            <MenuItem value="Completed">முடிக்கப்பட்டது</MenuItem>
+          </TextField>
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="success"
+            fullWidth
+            disabled={saving}
+          >
+            {saving ? "Saving..." : "Save"}
+          </Button>
+        </Grid>
+      </Paper>
+    </Box>
   );
 };

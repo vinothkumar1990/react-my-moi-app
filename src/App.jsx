@@ -52,6 +52,10 @@ import { MoiProvider } from "./context/MoiProvider";
 import { GroupTable } from "./components/GroupTable";
 import { MoiAllGroupProvider } from "./context/MoiAllGroupProvider";
 import { LoanAllProvider } from "./context/LoanAllProvider";
+import { MoiSearchProvider } from "./context/MoiSearchProvider";
+import { VoiceProvider } from "./context/VoiceProvider";
+import { LoanSearchRelo } from "./components/LoanSearchRelo";
+import { LoanSearchProvider } from "./context/LoanSearchProvider";
 function App() {
   const [cart, setCart] = useState([]);
 
@@ -429,7 +433,9 @@ function App() {
             path="/mois_search"
             element={
               <PrivateRoute>
-                <MoiSearchRelo />
+                <MoiSearchProvider>
+                  <MoiSearchRelo />
+                </MoiSearchProvider>
               </PrivateRoute>
             }
           />
@@ -491,6 +497,16 @@ function App() {
                 <LoanAllProvider>
                   <PlaceGroupLoan />
                 </LoanAllProvider>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="loans/mois_search"
+            element={
+              <PrivateRoute>
+                <LoanSearchProvider>
+                  <LoanSearchRelo />
+                </LoanSearchProvider>
               </PrivateRoute>
             }
           />

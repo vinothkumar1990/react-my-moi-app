@@ -7,9 +7,11 @@ import {
   Button,
   CircularProgress,
   MenuItem,
+  IconButton,
+  Box,
 } from "@mui/material";
 import Swal from "sweetalert2";
-
+import { motion } from "framer-motion";
 export const NewLoan = () => {
   const paperStyle = {
     width: 400,

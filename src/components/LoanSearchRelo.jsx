@@ -6,7 +6,10 @@ import Paper from "@mui/material/Paper";
 import { Atom } from "react-loading-indicators";
 import { motion } from "framer-motion";
 import { useContext } from "react";
-import { MoiContext } from "../context/MoiSearchProvider";
+import { MoiContext } from "../context/LoanSearchProvider";
+import { LoanFilterContent } from "./LoanFilterContent";
+import { LoanFilterSection } from "./LoanFilterSection";
+import { LoanFilterTable } from "./LoanFilterTable";
 import {
   FormControl,
   InputLabel,
@@ -25,10 +28,8 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import MicIcon from "@mui/icons-material/Mic";
-import { MoiFilterSection } from "./MoiFilterSection";
-import { MoiFilterContent } from "./MoiFilterContent";
-import { MoiFilterTable } from "./MoiFilterTable";
-export const MoiSearchRelo = () => {
+
+export const LoanSearchRelo = () => {
   const {
     loggedInUser,
     userFunctionName,
@@ -78,9 +79,9 @@ export const MoiSearchRelo = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <MoiFilterContent />
-      <MoiFilterSection />
-      <MoiFilterTable />
+      <LoanFilterContent />
+      <LoanFilterSection />
+      <LoanFilterTable />
     </motion.div>
   );
 };

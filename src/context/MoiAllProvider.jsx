@@ -167,18 +167,18 @@ export const MoiAllProvider = ({ children }) => {
   }, []);
 
   const thStyle = {
-      padding: "10px",
-      borderBottom: "1px solid #ccc",
-      textAlign: "center",
-      color: "white",
-    };
-    const tdStyle = { padding: "10px", borderBottom: "1px solid #eee" };
-    const tdTotalStyle = {
-      padding: "10px",
-      borderBottom: "1px solid #eee",
-      textAlign: "center",
-      color: "#39740c",
-    };
+    padding: "10px",
+    borderBottom: "1px solid #ccc",
+    textAlign: "center",
+    color: "white",
+  };
+  const tdStyle = { padding: "10px", borderBottom: "1px solid #eee" };
+  const tdTotalStyle = {
+    padding: "10px",
+    borderBottom: "1px solid #eee",
+    textAlign: "center",
+    color: "#39740c",
+  };
 
   return (
     <MoiContext.Provider
@@ -199,7 +199,6 @@ export const MoiAllProvider = ({ children }) => {
         thStyle,
         tdStyle,
         tdTotalStyle,
-
       }}
     >
       {children}

@@ -83,75 +83,127 @@ export const LoanAllProvider = ({ children }) => {
   };
 
   // ✅ Edit Function
-  const handleEdit = (id) => {
-    navigate(`/update_loan/${id}`);
-  };
-
-  // ✅ Calculate Totals
-  const totalOldAmount = products.reduce(
-    (sum, item) => sum + Number(item.old_amount || 0),
-    0,
-  );
-  const totalNewAmount = products.reduce(
-    (sum, item) => sum + Number(item.new_amount || 0),
-    0,
+  const handleEdit = useCallback(
+    (id) => {
+      navigate(`/update_loan/${id}`);
+    },
+    [navigate],
   );
 
-  const loanGroup = products && products.length > 0 ? products : [];
+  const { totalOldAmount, totalNewAmount } = useMemo(() => {
+    return products.reduce(
+      (acc, item) => {
+        acc.totalOldAmount += Number(item.old_amount || 0);
+        acc.totalNewAmount += Number(item.new_amount || 0);
+        return acc;
+      },
+      {
+        totalOldAmount: 0,
+        totalNewAmount: 0,
+      },
+    );
+  }, [products]);
 
-  // Group by `name`
-  const grouped_name = loanGroup.reduce((acc, curr) => {
-    if (!acc[curr.name]) acc[curr.name] = [];
-    acc[curr.name].push(curr);
-    return acc;
-  }, {});
+  const loanGroup = useMemo(() => {
+    return products ?? [];
+  }, [products]);
 
-  // Group by `place`
-  const grouped_place = loanGroup.reduce((acc, curr) => {
-    if (!acc[curr.place]) acc[curr.place] = [];
-    acc[curr.place].push(curr);
-    return acc;
-  }, {});
+  const { grouped_name, grouped_place } = useMemo(() => {
+    const grouped_name = {};
+    const grouped_place = {};
 
-  const thStyle = {
-    padding: "10px",
-    borderBottom: "1px solid #ccc",
-    textAlign: "center",
-    color: "white",
-  };
-  const tdStyle = { padding: "10px", borderBottom: "1px solid #eee" };
-  const tdTotalStyle = {
-    padding: "10px",
-    borderBottom: "1px solid #eee",
-    textAlign: "center",
-    color: "#39740c",
-  };
+    loanGroup.forEach((item) => {
+      if (!grouped_name[item.name]) {
+        grouped_name[item.name] = [];
+      }
+
+      grouped_name[item.name].push(item);
+
+      if (!grouped_place[item.place]) {
+        grouped_place[item.place] = [];
+      }
+
+      grouped_place[item.place].push(item);
+    });
+
+    return {
+      grouped_name,
+      grouped_place,
+    };
+  }, [loanGroup]);
+
+  const thStyle = useMemo(
+    () => ({
+      padding: "10px",
+      borderBottom: "1px solid #ccc",
+      textAlign: "center",
+      color: "white",
+    }),
+    [],
+  );
+
+  const tdStyle = useMemo(
+    () => ({
+      padding: "10px",
+      borderBottom: "1px solid #eee",
+    }),
+    [],
+  );
+  const tdTotalStyle = useMemo(
+    () => ({
+      padding: "10px",
+      borderBottom: "1px solid #eee",
+      textAlign: "center",
+      color: "#39740c",
+    }),
+    [],
+  );
 
   // ✅ Print
-  const handlePrint = () => window.print();
+  const handlePrint = useCallback(() => {
+    window.print();
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({
+      navigate,
+      products,
+      error,
+      isLoading,
+      handleDelete,
+      handleEdit,
+      totalNewAmount,
+      totalOldAmount,
+      handlePrint,
+      lastRowRef,
+      thStyle,
+      tdStyle,
+      tdTotalStyle,
+      loanGroup,
+      grouped_name,
+      grouped_place,
+    }),
+    [
+      navigate,
+      products,
+      error,
+      isLoading,
+      handleDelete,
+      handleEdit,
+      totalNewAmount,
+      totalOldAmount,
+      handlePrint,
+      lastRowRef,
+      thStyle,
+      tdStyle,
+      tdTotalStyle,
+      loanGroup,
+      grouped_name,
+      grouped_place,
+    ],
+  );
 
   return (
-    <MoiContext.Provider
-      value={{
-        navigate,
-        products,
-        error,
-        isLoading,
-        handleDelete,
-        handleEdit,
-        totalNewAmount,
-        totalOldAmount,
-        handlePrint,
-        lastRowRef,
-        thStyle,
-        tdStyle,
-        tdTotalStyle,
-        loanGroup,
-        grouped_name,
-        grouped_place,
-      }}
-    >
-      {children}
-    </MoiContext.Provider>
+    <MoiContext.Provider value={contextValue}>{children}</MoiContext.Provider>
   );
 };

@@ -46,11 +46,16 @@ export const MoiAllGroupProvider = ({ children }) => {
     const completedFunctionGroup = {};
 
     (products || []).forEach((item) => {
+
+
       // Group All Records
       if (!allGroup[item.name]) {
         allGroup[item.name] = [];
       }
       allGroup[item.name].push(item);
+
+
+
 
       // Pending Records
       if (item.status === "pending") {
@@ -69,6 +74,8 @@ export const MoiAllGroupProvider = ({ children }) => {
         pendingFunctionGroup[key].push(item);
       }
 
+
+      
       // Completed Records
       if (item.status === "completed") {
         completed.push(item);

@@ -46,7 +46,12 @@ export const MoiFilterSection = () => {
         style={{ color: "#1976d2", backgroundColor: "#26ccb0" }}
       >
         <CardContent>
-          <Typography variant="h6" fontWeight="bold" mb={3}>
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            mb={3}
+            style={{ color: "#d21941" }}
+          >
             🔍 தேடல்
           </Typography>
 

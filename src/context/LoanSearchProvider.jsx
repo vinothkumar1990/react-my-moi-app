@@ -30,12 +30,14 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import MicIcon from "@mui/icons-material/Mic";
 import { motion } from "framer-motion";
 import SearchInput from "../components/SearchInput";
+import { API_CONFIG } from "../config/config.js";
 export const MoiContext = createContext();
 
 export const LoanSearchProvider = ({ children }) => {
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
   const userFunctionName = loggedInUser?.function_name || "";
-  const { products, error, isLoading } = useData(
+  {
+    /*const { products, error, isLoading } = useData(
     "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/loans",
     {
       headers: {
@@ -46,7 +48,19 @@ export const LoanSearchProvider = ({ children }) => {
         "Content-Type": "application/json",
       },
     },
-  );
+  );*/
+  }
+
+  const { products, error, isLoading, setProducts } = useData(
+      `${API_CONFIG.BASE_URL}/rest/v1/loans`,
+      {
+        headers: {
+          apikey: API_CONFIG.API_KEY,
+          Authorization: `Bearer ${API_CONFIG.API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
   const [statusFilter, setStatusFilter] = useState("all");
   const [nameSearch, setNameSearch] = useState("");
@@ -82,7 +96,7 @@ export const LoanSearchProvider = ({ children }) => {
     },
     {
       field: "action",
-      headerName: "Action",
+      headerName: "",
       width: 120,
       sortable: false,
       filterable: false,

@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import { API_CONFIG } from "../config/config.js";
 export const NewRelo = () => {
   const paperStyle = {
     width: 400,

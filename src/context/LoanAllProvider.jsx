@@ -13,19 +13,17 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import useData from "../components/custom-hook/useData";
-
+import { API_CONFIG } from "../config/config.js";
 export const MoiContext = createContext();
 
 export const LoanAllProvider = ({ children }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const { products, error, isLoading, setProducts } = useData(
-    "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/loans",
+    `${API_CONFIG.BASE_URL}/rest/v1/loans`,
     {
       headers: {
-        apikey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
+        apikey: API_CONFIG.API_KEY,
+        Authorization: `Bearer ${API_CONFIG.API_KEY}`,
         "Content-Type": "application/json",
       },
     },

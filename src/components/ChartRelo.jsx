@@ -13,7 +13,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import useData from "./custom-hook/useData"; // ✅ Ensure your hook path is correct
 import data from "../assets/mois.json";
 import "./Home.css";
-
+import { API_CONFIG } from "../config/config.js";
 ChartJS.register(
   BarElement,
   ArcElement,
@@ -25,13 +25,11 @@ ChartJS.register(
 
 export const ChartRelo = () => {
   const { products, error, isLoading } = useData(
-    "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/mois",
+    `${API_CONFIG.BASE_URL}/rest/v1/mois`,
     {
       headers: {
-        apikey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
+        apikey: API_CONFIG.API_KEY,
+        Authorization: `Bearer ${API_CONFIG.API_KEY}`,
         "Content-Type": "application/json",
       },
     },

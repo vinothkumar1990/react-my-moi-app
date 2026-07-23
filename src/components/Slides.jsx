@@ -6,22 +6,20 @@ import image2 from "../assets/images/image2.jpg";
 import image3 from "../assets/images/image3.jpg";
 import image4 from "../assets/images/image4.jpg";
 import useData from "./custom-hook/useData"; // ✅ Custom data hook
-
+import { API_CONFIG } from "../config/config.js";
 const images = [image1, image2, image3, image4];
 
 export const Slides = () => {
   // ✅ Fetch data from Supabase
   const { products, error, isLoading } = useData(
-    "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/mois",
+    `${API_CONFIG.BASE_URL}/rest/v1/mois`,
     {
       headers: {
-        apikey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
+        apikey: API_CONFIG.API_KEY,
+        Authorization: `Bearer ${API_CONFIG.API_KEY}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const [mois, setMois] = useState([]);
@@ -120,11 +118,10 @@ export const Slides = () => {
                   fontWeight: "500",
                 }}
               >
-                {product.place} — ₹{product.new_amount} - {product.function_name}
-                
+                {product.place} — ₹{product.new_amount} -{" "}
+                {product.function_name}
               </p>
               {/* ✅ Display Status (Pending / Completed / etc.) */}
-              
             </Carousel.Caption>
           </div>
         </Carousel.Item>

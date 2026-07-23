@@ -41,7 +41,11 @@ export const MoiFilterContent = () => {
           boxShadow: 4,
         }}
       >
-        <Typography variant="h4" fontWeight="bold" style={{ color: "white" }}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          style={{ color: "white", textAlign: "center" }}
+        >
           மொய் பதிவுகளை தேடவும் மற்றும் நிர்வகிக்கவும்
         </Typography>
       </Box>
@@ -60,6 +64,7 @@ export const MoiFilterContent = () => {
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
+                fontWeight="bold"
                 style={{ color: "#1baa33" }}
               >
                 📋 மொத்த மொய்
@@ -86,6 +91,7 @@ export const MoiFilterContent = () => {
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
+                fontWeight="bold"
                 style={{ color: "#1baa33" }}
               >
                 ✅ நிறைவு
@@ -112,6 +118,7 @@ export const MoiFilterContent = () => {
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
+                fontWeight="bold"
                 style={{ color: "#d21919" }}
               >
                 ⏳ நிலுவையில்
@@ -138,6 +145,7 @@ export const MoiFilterContent = () => {
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
+                fontWeight="bold"
                 style={{ color: "#d21919" }}
               >
                 💰 பழைய மொத்த தொகை
@@ -163,6 +171,7 @@ export const MoiFilterContent = () => {
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
+                fontWeight="bold"
                 style={{ color: "#1baa33" }}
               >
                 💰 புதிய மொத்த தொகை
@@ -189,6 +198,7 @@ export const MoiFilterContent = () => {
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
+                fontWeight="bold"
                 style={{ color: "#1baa33" }}
               >
                 💰 மொத்த தொகை
@@ -214,6 +224,7 @@ export const MoiFilterContent = () => {
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
+                fontWeight="bold"
                 style={{ color: "#d21919" }}
               >
                 💰 நிலுவையில் உள்ள மொத்த தொகை
@@ -239,6 +250,7 @@ export const MoiFilterContent = () => {
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
+                fontWeight="bold"
                 style={{ color: "#1baa33" }}
               >
                 💰 நிறைவு செய்த மொத்த தொகை

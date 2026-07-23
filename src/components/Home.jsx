@@ -6,21 +6,20 @@ import "./Home.css";
 import { Slides } from "./Slides";
 import useData from "./custom-hook/useData"; // custom hook
 import { motion } from "framer-motion";
-
+import { API_CONFIG } from "../config/config.js";
 export const Home = ({ cart, setCart }) => {
   // Logged in user
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
   const userFunction = loggedInUser?.function_name || "";
 
   // Fetch data from Supabase
+
   const { products, error, isLoading, setProducts } = useData(
-    "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/mois",
+    `${API_CONFIG.BASE_URL}/rest/v1/mois`,
     {
       headers: {
-        apikey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
+        apikey: API_CONFIG.API_KEY,
+        Authorization: `Bearer ${API_CONFIG.API_KEY}`,
         "Content-Type": "application/json",
       },
     },
@@ -112,23 +111,6 @@ export const Home = ({ cart, setCart }) => {
       >
         <Slides />
       </motion.div>
-
-      {/* Print Button */}
-      {/* <div style={{ textAlign: "right", margin: "10px" }} className="no-print">
-        <button
-          onClick={handlePrint}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#0275d8",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Print Page
-        </button>
-      </div>*/}
 
       {/* Grouped Table */}
       <div style={{ maxWidth: "100%", width: "100%", padding: "10px" }}>
@@ -270,6 +252,7 @@ export const Home = ({ cart, setCart }) => {
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td></td>
                     </motion.tr>
                   </tbody>
                 </table>
@@ -295,25 +278,6 @@ export const Home = ({ cart, setCart }) => {
           ))
         )}
       </div>
-
-      {/* PRINT STYLES */}
-      <style>
-        {`
-        @media print {
-          @page {
-            size: landscape;
-            margin: 10mm;
-          }
-          body {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          .slides-section, .no-print {
-            display: none !important;
-          }
-        }
-      `}
-      </style>
     </div>
   );
 };

@@ -31,19 +31,18 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import MicIcon from "@mui/icons-material/Mic";
 import { motion } from "framer-motion";
 import SearchInput from "../components/SearchInput";
+import { API_CONFIG } from "../config/config.js";
 export const MoiContext = createContext();
 
 export const MoiSearchProvider = ({ children }) => {
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
   const userFunctionName = loggedInUser?.function_name || "";
-  const { products, error, isLoading } = useData(
-    "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/mois",
+  const { products, error, isLoading, setProducts } = useData(
+    `${API_CONFIG.BASE_URL}/rest/v1/mois`,
     {
       headers: {
-        apikey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
+        apikey: API_CONFIG.API_KEY,
+        Authorization: `Bearer ${API_CONFIG.API_KEY}`,
         "Content-Type": "application/json",
       },
     },
@@ -84,7 +83,7 @@ export const MoiSearchProvider = ({ children }) => {
       },
       {
         field: "action",
-        headerName: "Action",
+        headerName: "",
         width: 120,
         sortable: false,
         filterable: false,
@@ -154,13 +153,13 @@ export const MoiSearchProvider = ({ children }) => {
         acc.oldAmount += oldAmt;
 
         // Completed
-        if (status === "completed" || status === "") {
+        if (status === "completed" || status === "Completed" || status === "") {
           acc.completedCount++;
           acc.totalCompletedAmount += newAmt;
         }
 
         // Pending
-        if (status === "pending" || status === "") {
+        if (status === "pending" || status === "Pending" || status === "") {
           acc.pendingCount++;
           acc.totalPendingAmount += newAmt;
         }

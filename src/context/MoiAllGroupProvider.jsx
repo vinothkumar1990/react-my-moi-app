@@ -1,19 +1,17 @@
 import { createContext, useMemo, useCallback } from "react";
 import useData from "../components/custom-hook/useData";
 import { useNavigate } from "react-router-dom";
-
+import { API_CONFIG } from "../config/config.js";
 export const MoiContext = createContext();
 
 export const MoiAllGroupProvider = ({ children }) => {
   const navigate = useNavigate();
-  const { products, error, isLoading } = useData(
-    "https://maywdxirobbziiuhjttx.supabase.co/rest/v1/mois",
+  const { products, error, isLoading, setProducts } = useData(
+    `${API_CONFIG.BASE_URL}/rest/v1/mois`,
     {
       headers: {
-        apikey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1heXdkeGlyb2JiemlpdWhqdHR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDQxODgsImV4cCI6MjA3NzEyMDE4OH0.XzwnZInezLXhwmBI29JmcGjmnRCGc35ih1XYBvYrlwA",
+        apikey: API_CONFIG.API_KEY,
+        Authorization: `Bearer ${API_CONFIG.API_KEY}`,
         "Content-Type": "application/json",
       },
     },
@@ -46,16 +44,11 @@ export const MoiAllGroupProvider = ({ children }) => {
     const completedFunctionGroup = {};
 
     (products || []).forEach((item) => {
-
-
       // Group All Records
       if (!allGroup[item.name]) {
         allGroup[item.name] = [];
       }
       allGroup[item.name].push(item);
-
-
-
 
       // Pending Records
       if (item.status === "pending") {
@@ -74,8 +67,6 @@ export const MoiAllGroupProvider = ({ children }) => {
         pendingFunctionGroup[key].push(item);
       }
 
-
-      
       // Completed Records
       if (item.status === "completed") {
         completed.push(item);

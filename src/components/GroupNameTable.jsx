@@ -28,10 +28,21 @@ export const GroupNameTable = ({ grouped }) => {
           </div>
 
           <div
+            style={{
+              width: "100%",
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch",
+            }}
           >
             <table
-              style={{ borderCollapse: "collapse", width: "100%" }}
               border="1"
+              style={{
+                borderCollapse: "collapse",
+                width: "100%",
+                minWidth: "900px",
+                tableLayout: "auto",
+                whiteSpace: "nowrap",
+              }}
             >
               <thead>
                 <tr style={{ backgroundColor: "#f1f1f1" }}>
